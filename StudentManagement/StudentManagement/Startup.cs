@@ -32,7 +32,8 @@ namespace StudentManagement
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    var processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+                    await context.Response.WriteAsync(processName);
                 });
             });
         }
