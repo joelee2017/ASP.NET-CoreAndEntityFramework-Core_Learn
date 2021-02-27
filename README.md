@@ -38,6 +38,16 @@
 
 ##### 四、ASP.NET Core 進程內(InProcess)託管
 
+需要在項目文件中添加`` `元素，其值為`InProcess`
+
+```xml
+<AspNetCoreHostingModel> InProcess </AspNetCoreHostingModel >
+```
+
+使用InProcess 託管，應用程序託管在IIS 工作進程(w3wp.exe 或iisexpress.exe)中。使用InProcess 託管，只有一個Web 服務器，它是承載我們的應用程序的IIS 服務器。
+
+![7 進程內託管圖示](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/7-1.png)
+
 ###### 進程內(InProcess)託管
 
 - 在本章節中，讓我們了解`CreateDefaultBuilder()`方法用於配置和設置Web服務器的功能。ASP.NET Core應用程序可以託管在進程內(InProcess)或進程外(OutOfProcess)中。在本章節中，我們將討論進程內(InProcess)託管，在下一個視頻中，我們將討論進程外(OutOfProcess)託管。
