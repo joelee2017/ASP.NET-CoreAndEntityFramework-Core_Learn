@@ -94,3 +94,51 @@ Kestrel 是ASP.NET Core 的跨平台Web 服務器。.NET Core 支持的所有平
 
 ------
 
+##### 五、ASP.NET Core 進程外(out-of-process)託管
+
+###### ASP.NET Core 進程內(InProcess)託管
+
+我們先簡單回顧下ASP.NET Core 中,要配置InProcess 的服務器，
+
+需要在項目文件中添加`` `元素，其值为`InProcess`
+
+```xml
+<AspNetCoreHostingModel> InProcess </AspNetCoreHostingModel >
+```
+
+使用InProcess 託管，應用程序託管在IIS 工作進程(w3wp.exe 或iisexpress.exe)中。使用InProcess 託管，只有一個Web 服務器，它是承載我們的應用程序的IIS 服務器。
+
+![7 進程內託管圖示](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/7-1.png)
+
+###### ASP.NET Core 進程外(out-of-process)託管
+
+- 有2 個Web 服務器,內部Web 服務器和外部Web 服務器。
+- 內部Web 服務器是Kestrel， 外部Web 服務器可以是IIS，Nginx 或Apache。在上節課中我們討論了什麼是Kestrel
+
+根據您運行ASP.NET Core 應用程序的方式的不同，可能會,也可能不會使用外部Web 服務器。
+
+Kestrel是嵌入在ASP.NET Core應用程序中的跨平台web服務器。使用`进程外(out-of-Process)托管`, Kestrel可通過以下兩種方式來進行使用：
+
+**Kestrel可以用作面向互聯網的web服務器,直接處理傳入的HTTP請求。** 在此模型中,我們不使用外部web服務器。只使用Kestrel,它作為服務器可以自主面向互聯網,直接處理傳入的HTTP請求。當我們使用. net Core CLI運行ASP.NET Core應用程序時, Kestrel是唯一用於處理和處理傳入HTTP請求的web服務器。
+
+![kestrel直面互聯網](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/7-2.png)
+
+**Kestrel 還可以與反向代理服務器(如IIS、Nginx 或Apache) 結合使用。**
+
+![配合方向代理](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/7-3.png)
+
+有兩種方法可以配置進程外託管 :
+
+- 方法一：將`<AspNetCoreHostingModel>`元素添加到應用程序的項目文件中，其值為`OutOfProcess`
+
+```xml
+<AspNetCoreHostingModel> OutOfProcess </AspNetCoreHostingModel >
+```
+
+- 方法二：默認為`OutOfProcess`託管。因此，如果我們從項目文件中刪除`<AspNetCoreHostingModel>`元素，默認情況下ASP.NET Core將使用`OutOfProcess`託管。
+
+###### 為什麼我們需要一個反向代理服務器？
+
+因為Kestrel 使用"進程外(out-of-process)託管", 結合反向代理服務器是一個不錯的選擇, 因為它提供了額外的配置和安全性層。它可能會更好地與現有基礎設施集成。它還可用於負載平衡。
+
+當我們使用.NET Core CLI運行ASP.NET Core項目時，默認情況下它會忽略我們在.csproj文件中指定的`托管設置`。因此項目文件中的``AspNetCoreHostingModel`標籤下的值是被忽略了的。無論您指定的值(InProcess或OutOfProcess)如何，它始終都是OutOfProcess託管，都是通過Kestrel託管應用程序,同時處理http請求。
