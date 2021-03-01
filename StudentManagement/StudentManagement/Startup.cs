@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -12,6 +13,14 @@ namespace StudentManagement
 {
     public class Startup
     {
+        private IConfiguration _configuration;
+
+        // 加入建構式依賴注入
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -32,8 +41,9 @@ namespace StudentManagement
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    var processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-                    await context.Response.WriteAsync(processName);
+                    // 進程名
+                    // var processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+                    await context.Response.WriteAsync(_configuration["MyKey"]);
                 });
             });
         }

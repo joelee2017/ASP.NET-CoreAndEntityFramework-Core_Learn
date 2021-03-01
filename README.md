@@ -177,3 +177,37 @@ Kestrel是嵌入在ASP.NET Core應用程序中的跨平台web服務器。使用`
 
 ------
 
+##### 七、ASP.NET Core Appsettings.json文件
+
+們將討論ASP.NET Core項目中`appsettings.json`文件的本質。
+
+在`web.config`ASP.NET Core中，應用程序配置設置可以來自以下不同的配置源。
+
+- 文件（appsettings.json，appsettings..json）`Environment`環境不同，託管在對應環境。
+- 用戶機密（用戶機密）
+- 環境變量
+- 命令行參數（命令行參數）
+
+**appsettings.json**文件：我們的項目是通過ASP.NET Core合理的“空”模板創建的，所以我們的項目中已經有一個appsettings.json的文件了。我們可以對文件進行如下修改，補充一個`MyKey`的鍵值對：
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "MyKey": " appsettings.json中Mykey的值"
+}
+```
+
+###### ASP.NET Core IConfiguration服務
+
+- `IConfiguration` 服務是為了從ASP.NET Core。
+- 如果**在多個配置源中**具有**相同名稱**的配置設置，簡單來說就是重名了，則後面的配置源將覆蓋先前的配置源。
+- 靜態類`WebHost`的`CreateDefaultBuilder()`方法在應用程序啟動時會自動去調用，按特定的順序重新配置源。
+- 要查看配置源的重新順序，請查看以下鏈接上的`ConfigureAppConfiguration()`方法 https://github.com/aspnet/MetaPackages/blob/release/2.2/src/Microsoft.AspNetCore/WebHost.cs
+
+------
+
