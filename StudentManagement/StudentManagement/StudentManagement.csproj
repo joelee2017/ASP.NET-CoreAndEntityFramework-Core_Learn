@@ -10,6 +10,11 @@
     <!--<AspNetCoreHostingModel> OutOfProcess </AspNetCoreHostingModel >-->
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties appsettings_1json__JsonSchema="" />

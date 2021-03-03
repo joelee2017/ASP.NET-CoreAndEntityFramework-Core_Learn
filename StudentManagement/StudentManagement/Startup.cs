@@ -35,34 +35,50 @@ namespace StudentManagement
             //有點類似setting的感覺,在這個middleware會針對request的內容去做初始化
             app.UseRouting();
 
+            //DefaultFilesOptions defaultFilesOptions = new DefaultFilesOptions();
+            //defaultFilesOptions.DefaultFileNames.Clear();
+            //defaultFilesOptions.DefaultFileNames.Add("abc.html");
+
+            //// 添加默認文件
+            //app.UseDefaultFiles(defaultFilesOptions);
+
+            //// 添加靜態文件中間件
+            //app.UseStaticFiles();
+
+            // 使用UseFileServer而不是UseDefaultFiles和UseStaticFiles
+            FileServerOptions fileServerOptions = new FileServerOptions();
+            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Clear();
+            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Add("default.html");
+            app.UseFileServer(fileServerOptions);
+
 
             //這邊才是真正去設定的地方,使用delegate去做設定
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    //避免亂碼
-                    context.Response.ContentType = "text/plain;charset=utf-8";
-                    // 進程名
-                    // var processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-                    // var configval = _configuration["MyKey"];
-                    await context.Response.WriteAsync("this is a 第一 hello world ");
-                    logger.LogInformation("MW1:傳入請求一");
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapGet("/", async context =>
+            //    {
+            //        //避免亂碼
+            //        context.Response.ContentType = "text/plain;charset=utf-8";
+            //        // 進程名
+            //        // var processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            //        // var configval = _configuration["MyKey"];
+            //        await context.Response.WriteAsync("this is a 第一 hello world ");
+            //        logger.LogInformation("MW1:傳入請求一");
 
-                    // 第二次調用
-                    await context.Response.WriteAsync("this is a second hello world ");
-                    logger.LogInformation("MW1:傳入請求二");
-                });                             
+            //        // 第二次調用
+            //        await context.Response.WriteAsync("this is a second hello world ");
+            //        logger.LogInformation("MW1:傳入請求二");
+            //    });
 
 
-                endpoints.MapGet("/test", async context =>
-                {
-                    //避免亂碼
-                    context.Response.ContentType = "text/plain;charset=utf-8";
+            //    endpoints.MapGet("/test", async context =>
+            //    {
+            //        //避免亂碼
+            //        context.Response.ContentType = "text/plain;charset=utf-8";
 
-                    await context.Response.WriteAsync("this is a 第二 test hello world ");
-                });
-            });
+            //        await context.Response.WriteAsync("this is a 第二 test hello world ");
+            //    });
+            //});
         }
     }
 }
