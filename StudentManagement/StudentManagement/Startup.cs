@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace StudentManagement
 {
@@ -24,22 +25,42 @@ namespace StudentManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            //有點類似setting的感覺,在這個middleware會針對request的內容去做初始化
             app.UseRouting();
 
+
+            //這邊才是真正去設定的地方,使用delegate去做設定
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
                 {
+                    //避免亂碼
+                    context.Response.ContentType = "text/plain;charset=utf-8";
                     // 進程名
                     // var processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-                    await context.Response.WriteAsync(_configuration["MyKey"]);
+                    // var configval = _configuration["MyKey"];
+                    await context.Response.WriteAsync("this is a 第一 hello world ");
+                    logger.LogInformation("MW1:傳入請求一");
+
+                    // 第二次調用
+                    await context.Response.WriteAsync("this is a second hello world ");
+                    logger.LogInformation("MW1:傳入請求二");
+                });                             
+
+
+                endpoints.MapGet("/test", async context =>
+                {
+                    //避免亂碼
+                    context.Response.ContentType = "text/plain;charset=utf-8";
+
+                    await context.Response.WriteAsync("this is a 第二 test hello world ");
                 });
             });
         }

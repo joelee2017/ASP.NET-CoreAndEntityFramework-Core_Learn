@@ -211,7 +211,7 @@ Kestrel是嵌入在ASP.NET Core應用程序中的跨平台web服務器。使用`
 
 ------
 
-##### 七、ASP.NET Core中的中間件
+##### 七、ASP.NET Core中的中間件Middleware
 
 ###### ASP.NET Core 中的中間件是什麼？
 
@@ -244,3 +244,86 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 - **中間件組件還可以處理傳出響應**。例如，日誌記錄中間件組件可以記錄響應發送的時間。此外，它還可以通過計算接收請求和響應發送時間之間的差異來計算處理請求所花費的所有時間。
 - **中間件組件是按照添加到管道的順序進行執行的**。所以我們要注意以正確的順序添加中間件，否則應用程序可能無法按預期運行，哪怕編譯成功，但是程序還是會出錯。
 - **中間件組件應該用NuGet包的形式提供**。由NuGet處理更新，盡量將中間件拆的足夠小，提供每個中間件獨立更新的能力。
+
+根據您的程序要求，您可以向請求處理管道添加盡可能多的中間件組件。例如，如果您正在使用一些靜態HTML 頁面和圖像,開發簡單的Web 應用程序，那麼您的請求處理管道可能只包含"StaticFiles"中間件。這個就是模塊化設計帶來的好處，讓每個人都像玩積木一樣。另一方面，如果您正在開發一個安全的數據驅動設計的Web 應用程序，那麼您可能需要幾個中間件組件，如StaticFiles 中間件，身份驗證中間件，授權中間件，MVC 中間件等。數據驅動設計,可以簡單理解為複雜項目。
+
+------
+
+##### 八、配置ASP.NET Core請求(Request)處理管道
+
+作為應用程序啟動的一部分，我們要在`Configure()`方法中設置**請求處理管道**。
+
+```csharp
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+    }
+
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    {
+         if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            //有點類似setting的感覺,在這個middleware會針對request的內容去做初始化
+            app.UseRouting();
+
+
+            //這邊才是真正去設定的地方,使用delegate去做設定
+            app.UseEndpoints(endpoints =>
+            {
+                 endpoints.MapGet("/", async context =>
+                {
+                    //避免亂碼
+                    context.Response.ContentType = "text/plain;charset=utf-8";
+
+                    await context.Response.WriteAsync("this is a 第一 hello world ");
+
+                    // 第二次調用
+                    await context.Response.WriteAsync("this is a second hello world ");
+                });                             
+
+
+                endpoints.MapGet("/test", async context =>
+                {
+                    await context.Response.WriteAsync("this is a second test hello world ");
+                });
+            });
+    }
+
+}
+```
+
+UseDeveloperExceptionPage中間件：顧名思義，如果存在異常並且環境是`Development`，此中間件會被調用，顯示**開發異常頁面**。我們將在後面的視頻中討論這個**DeveloperExceptionPage中間件**和**環境變量的使用**。
+
+Routing 內容補充：
+
+https://ithelp.ithome.com.tw/articles/10242210
+
+https://blog.darkthread.net/blog/aspnetcore-middleware-lab/
+
+Middleware 處理 Request 的原理，Request 會通過一連串 Middleware 組成的 Pipeline，每個 Middleware 在經手 Request 時可以決定接手處理傳回 Response 或呼叫 next() 交給下一個 Middleware 處理。而 next() 執行完下一個 Middleware 邏輯後，主導權又回到上層 Middleware。(如下圖) 換言之，註冊的先後順序很重要，Middleware 1 可優先決定挑選哪些 Request 留下來處理，吃剩的再交給 Middleware 2 發落；而 Middleware 3、Middleware 2 執行完要傳 Response 給使用者之前，Middleware 1 也有權利再跑一段程式對 Response 內容修改加料。
+
+![img](https://blog.darkthread.net/Posts/files/Fig2_637131016820965167.png)
+
+- 請記住，ASP.NET Core中的中間件可以訪問傳入請求和傳出響應
+- 請求先到達`Middleware1`，它記錄**(MW1：傳入請求)**，因此我們首先看到此消息。
+- 然後`Middleware1`調用`next()`。`next()`會調用管道中的`Middleware2`。
+- `Middleware2`記錄**(MW2：傳入請求)**。
+- 然後`Middleware2`會調用`next()`再調用`Middleware3`.
+- `Middleware3`處理請求並生成響應。因此，我們看到的下一條消息是`(MW3：處理請求全生成響應)`
+- 此時管道開始逆轉。
+- 此時控制權將，交回到`Middleware2`，並將`Middleware3`生成的響應傳遞給它。`Middleware2`記錄**(MW2：傳出響應)**，這是我們接下來看到的。
+- 最後,`Middleware2`將控制權交給`Midleware1`。
+- `Middleware1` 記錄(MW1: 傳出響應), 這是我們最後看到的。
+
+###### 請求處理管道的中3 個非常重要的知識點：
+
+- 所有的`請求`都會在每個中間件組件調用`next()方法`之前觸發。`請求`按照圖中箭頭的所示方向，依次穿過所有管道。
+- 當中間件處理請求並產生響應時，請求處理流程在管道中開始反向傳遞。
+- 所有的`響應`都會在每個中間件組件`調用next()方法`之前觸發。`響應`按照圖中箭頭的所示方向，依次穿過所有管道。
+
+------
+
