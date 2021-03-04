@@ -390,3 +390,62 @@ app.UseFileServer(fileServerOptions);
 
 ------
 
+##### 十、ASP.NET Core 開發人員異常頁面
+
+###### UseDeveloperExceptionPage 中間件
+
+**我們談談在Startup類的Configure()方法中以下代碼**:
+
+```csharp
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+
+    app.UseFileServer();
+
+    app.Run(async (context) =>
+    {
+ 		throw new Exception("您的請求在管道中發生了一些異常，請檢查。");
+        await context.Response.WriteAsync("Hello World!");
+    });
+}
+```
+
+`UseFileServer`中間件結合了`UseDefaultFiles`和`UseStaticFiles`中間件的功能。在我們之前的系列視頻中，我們在wwwroot文件夾中包含了一個名為`default.html`的默認html文檔。
+
+因此，對應用程序根URL的請求即`http：//localhost：49119`由`UseFileServer`處理中間件和管道從那裡反轉。因此，在我們`Run()`方法註冊的請求管道中的下一個中間件也無法執行，因此我們不會看到此中間件拋出的異常。
+
+現在，如果我們向`http：//localhost：49119/abc.html`發出請求，我們會看到異常。因為，在這種情況下，`UseFileServer`中間件找不到名為`abc.html`的文件。它會繼續去調用管道中的下一個中間件，在我們的例子中是我們使用`Run()`方法註冊的中間件。此中間件拋出異常，我們按預期看到異常詳細信息。
+
+如果您對傳統的ASP.NET有任何經驗，那麼您必須非常熟悉此頁面。這類似於傳統的ASP.NET中的**黃色死亡屏幕**。
+
+此`Developer Exception`頁麵包含異常詳細信息:
+
+- 堆棧跟踪，包括導致異常的文件名和行號
+- Query String, Cookies 和HTTP headers
+
+目前，在異常頁面的"Query "選項卡上，我們看到"無QueryString 數據"。如果請求URL 中有任何查詢字符串參數，如下所示，您將在"Query "選項卡下看到它們。
+
+```
+http://localhost:48118/abc.html?country=person&state=islocked
+```
+
+###### 自定義UseDeveloperExceptionPage 中間件
+
+與ASP.NET Core中的大多數其他中間件組件一樣，我們也可以自定義`UseDeveloperExceptionPage`中間件。每當您想要自定義中間件組件時，請始終記住您可能擁有相應的`OPTIONS对象`。那麼，要自定義`UseDeveloperExceptionPage`中間件，
+
+```csharp
+DeveloperExceptionPageOptions developerExceptionPageOptions = new DeveloperExceptionPageOptions
+{
+    SourceCodeLineCount = 10
+};
+app.UseDeveloperExceptionPage(developerExceptionPageOptions);
+```
+
+`SourceCodeLineCount`屬性指定在導致異常的代碼行之前和之後要包含的代碼行數。
+
+------
+

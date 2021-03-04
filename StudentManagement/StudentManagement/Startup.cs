@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Builder;
+ï»¿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace StudentManagement
 {
@@ -12,7 +13,7 @@ namespace StudentManagement
     {
         private IConfiguration _configuration;
 
-        // ¥[¤J«Øºc¦¡¨Ì¿àª`¤J
+        // åŠ å…¥å»ºæ§‹å¼ä¾è³´æ³¨å…¥
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -29,56 +30,72 @@ namespace StudentManagement
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                DeveloperExceptionPageOptions developerExceptionPageOptions = new DeveloperExceptionPageOptions
+                {
+                    SourceCodeLineCount = 10
+                };
+                app.UseDeveloperExceptionPage(developerExceptionPageOptions);
+                //app.UseDeveloperExceptionPage();
             }
 
-            //¦³ÂIÃş¦üsettingªº·PÄ±,¦b³o­Ómiddleware·|°w¹ïrequestªº¤º®e¥h°µªì©l¤Æ
+            //æœ‰é»é¡ä¼¼settingçš„æ„Ÿè¦º,åœ¨é€™å€‹middlewareæœƒé‡å°requestçš„å…§å®¹å»åšåˆå§‹åŒ–
             app.UseRouting();
 
             //DefaultFilesOptions defaultFilesOptions = new DefaultFilesOptions();
             //defaultFilesOptions.DefaultFileNames.Clear();
             //defaultFilesOptions.DefaultFileNames.Add("abc.html");
 
-            //// ²K¥[Àq»{¤å¥ó
+            //// æ·»åŠ é»˜èªæ–‡ä»¶
             //app.UseDefaultFiles(defaultFilesOptions);
 
-            //// ²K¥[ÀRºA¤å¥ó¤¤¶¡¥ó
+            //// æ·»åŠ éœæ…‹æ–‡ä»¶ä¸­é–“ä»¶
             //app.UseStaticFiles();
 
-            // ¨Ï¥ÎUseFileServer¦Ó¤£¬OUseDefaultFiles©MUseStaticFiles
-            FileServerOptions fileServerOptions = new FileServerOptions();
-            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Clear();
-            fileServerOptions.DefaultFilesOptions.DefaultFileNames.Add("default.html");
-            app.UseFileServer(fileServerOptions);
+            // ä½¿ç”¨UseFileServerè€Œä¸æ˜¯UseDefaultFileså’ŒUseStaticFiles
+            //FileServerOptions fileServerOptions = new FileServerOptions();
+            //fileServerOptions.DefaultFilesOptions.DefaultFileNames.Clear();
+            //fileServerOptions.DefaultFilesOptions.DefaultFileNames.Add("default.html");
+            //app.UseFileServer(fileServerOptions);
 
 
-            //³oÃä¤~¬O¯u¥¿¥h³]©wªº¦a¤è,¨Ï¥Îdelegate¥h°µ³]©w
+            //é€™é‚Šæ‰æ˜¯çœŸæ­£å»è¨­å®šçš„åœ°æ–¹,ä½¿ç”¨delegateå»åšè¨­å®š
             //app.UseEndpoints(endpoints =>
             //{
-            //    endpoints.MapGet("/", async context =>
+            //    endpoints.MapGet("/", async context => 
             //    {
-            //        //Á×§K¶Ã½X
+            //        //é¿å…äº‚ç¢¼
             //        context.Response.ContentType = "text/plain;charset=utf-8";
-            //        // ¶iµ{¦W
+            //        // é€²ç¨‹å
             //        // var processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
             //        // var configval = _configuration["MyKey"];
-            //        await context.Response.WriteAsync("this is a ²Ä¤@ hello world ");
-            //        logger.LogInformation("MW1:¶Ç¤J½Ğ¨D¤@");
+            //        await context.Response.WriteAsync("this is a ç¬¬ä¸€ hello world ");
+            //        logger.LogInformation("MW1:å‚³å…¥è«‹æ±‚ä¸€");
 
-            //        // ²Ä¤G¦¸½Õ¥Î
+            //        // ç¬¬äºŒæ¬¡èª¿ç”¨
             //        await context.Response.WriteAsync("this is a second hello world ");
-            //        logger.LogInformation("MW1:¶Ç¤J½Ğ¨D¤G");
+            //        logger.LogInformation("MW1:å‚³å…¥è«‹æ±‚äºŒ");
             //    });
 
 
             //    endpoints.MapGet("/test", async context =>
             //    {
-            //        //Á×§K¶Ã½X
+            //        //é¿å…äº‚ç¢¼
             //        context.Response.ContentType = "text/plain;charset=utf-8";
 
-            //        await context.Response.WriteAsync("this is a ²Ä¤G test hello world ");
+            //        await context.Response.WriteAsync("this is a ç¬¬äºŒ test hello world ");
             //    });
             //});
+
+            app.UseFileServer();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("/", async context =>
+                {
+                    throw new Exception("æ‚¨çš„è«‹æ±‚åœ¨ç®¡é“ä¸­ç™¼ç”Ÿäº†ä¸€äº›ç•°å¸¸ï¼Œè«‹æª¢æŸ¥ã€‚");
+                    await context.Response.WriteAsync("Hello World ");
+                });
+            });
         }
     }
 }
