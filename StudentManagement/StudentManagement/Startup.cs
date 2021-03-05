@@ -30,12 +30,12 @@ namespace StudentManagement
         {
             if (env.IsDevelopment())
             {
-                DeveloperExceptionPageOptions developerExceptionPageOptions = new DeveloperExceptionPageOptions
-                {
-                    SourceCodeLineCount = 10
-                };
-                app.UseDeveloperExceptionPage(developerExceptionPageOptions);
-                //app.UseDeveloperExceptionPage();
+                //DeveloperExceptionPageOptions developerExceptionPageOptions = new DeveloperExceptionPageOptions
+                //{
+                //    SourceCodeLineCount = 10
+                //};
+                //app.UseDeveloperExceptionPage(developerExceptionPageOptions);
+                app.UseDeveloperExceptionPage();
             }
 
             //有點類似setting的感覺,在這個middleware會針對request的內容去做初始化
@@ -49,7 +49,7 @@ namespace StudentManagement
             //app.UseDefaultFiles(defaultFilesOptions);
 
             //// 添加靜態文件中間件
-            //app.UseStaticFiles();
+            app.UseStaticFiles();
 
             // 使用UseFileServer而不是UseDefaultFiles和UseStaticFiles
             //FileServerOptions fileServerOptions = new FileServerOptions();
@@ -92,8 +92,9 @@ namespace StudentManagement
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    throw new Exception("您的請求在管道中發生了一些異常，請檢查。");
-                    await context.Response.WriteAsync("Hello World ");
+                    //throw new Exception("您的請求在管道中發生了一些異常，請檢查。");
+                    //await context.Response.WriteAsync("Hello World ");
+                    await context.Response.WriteAsync("Hosting Environment: " + env.EnvironmentName);
                 });
             });
         }

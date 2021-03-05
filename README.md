@@ -449,3 +449,51 @@ app.UseDeveloperExceptionPage(developerExceptionPageOptions);
 
 ------
 
+##### 十一、ASP.NET Core 中的環境變量
+
+**軟件開發環境**在大多數軟件開發組織中，我們通常具有以下開發環境。
+
+- 開發環境--Development
+- 演示(模擬、臨時)環境--Staging
+- 生產環境-- Production
+
+**為什麼我們需要不同的開發環境，如開發，演示，生產等等環境。**
+
+**開發環境：**我們的軟件開發人員通常將此環境用於我們的日常開發工作。我們希望在開發環境中加載非縮小的JavaScript 和CSS 文件，以便於調試。類似地，如果存在未處理的異常，我們需要開發人員異常頁面，以便我們可以理解異常的根本原因並在需要時進行修復。
+
+**演示環境：**許多組織或者公司嘗試使其演示環境盡可能與實際生產環境保持一致。此環境的主要原因是識別任何與部署相關的問題。此外，如果您正在開發B2B(企業對企業)應用程序，您可能正在與其他服務提供商系統連接。許多組織通常設置其臨時環境以與服務提供商進行交互，以進行完整的端到端測試。我們通常不會在演示環境中進行故障排除和調試，同時為了獲得更好的性能，我們需要加載縮小的JavaScript 和CSS 文件。如果存在未處理的異常，則顯示用戶友好的錯誤頁面而不是開發人員異常頁面。用戶友好的錯誤頁面不包含任何技術細節。它包含如下通用消息 :"出現問題，請使用下面的聯繫方式發送電子郵件，聊天或致電我們的應用程序支持"
+
+**生產環境：**我們用於日常業務的實際環境。應配置生產環境以獲得最大的安全性和性能。因此，加載縮小的JavaScript 和CSS 文件以提高性能。為了更好的安全性，請顯示用戶友好錯誤頁面而不是開發人員異常頁面。Developer Exception 頁面上的技術細節對最終用戶沒有意義，惡意用戶可以使用它們進入您的應用程序。
+
+###### IHostingEnvironment 服務的中常用的方法介紹:
+
+使用IHostingEnvironment 服務的以下方法來標識運行應用程序的環境。
+
+- IsDevelopment()
+- IsStaging()
+- IsProduction()
+
+如果您擁有UAT(用戶驗收測試)或QA(質量保證)環境等自定義環境，該怎麼辦？
+
+> 開發環境(development)、集成環境(integration)、測試環境(testing)、QA 驗證，模擬環境(staging)、生產環境(production)。
+
+那麼，ASP.NET Core 也支持這些自定義環境。例如，要檢查環境是否為UAT，請使用IsEnvironment()方法，如下所示。 `env.IsEnvironment("UAT")`
+
+```csharp
+//如果環境是Development serve Developer Exception Page
+if(env.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+//否则提供友好錯誤頁面聯係信息
+else if (env.IsStaging() || env.IsProduction() || env.IsEnvironment("UAT")){
+    app.UseExceptionHandler("/Error");
+}
+```
+
+Tag Helpers 是ASP.NET Core 中的新功能。在一個Razor 視圖裡面，也可以在.CSHTML 頁面中進行使用，稱為環境標記助手。
+
+此環境標記幫助程序支持根據`ASPNETCORE_ENVIRONMENT`變量的值呈現不同的內容。在我們學習本課程並為我們的應用程序創建模型，視圖和控制器時，我們將詳細討論Tag Helpers，包括環境標記助手(Environment Tag Helper)。
+
+------
+
