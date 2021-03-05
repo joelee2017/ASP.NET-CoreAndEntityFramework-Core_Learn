@@ -497,3 +497,145 @@ Tag Helpers 是ASP.NET Core 中的新功能。在一個Razor 視圖裡面，也�
 
 ------
 
+##### 十二、詳解ASP.NET Core MVC 的設計模式
+
+在本節課中我們要討論的內容：
+
+- 什麼是MVC？
+- 它是如何工作的？
+
+###### 什麼是MVC
+
+![ASP.NET Core MVC 概觀| Microsoft Docs](https://docs.microsoft.com/zh-tw/aspnet/core/mvc/overview/_static/mvc.png?view=aspnetcore-5.0)
+
+MVC由三個基本部分組成-模型(Model)，視圖(View)和控制器(Controller)。它是用於實現應用程序的**用戶界面層**的架構設計模式。一個典型的實際應用程序通常具有以下層：
+
+- 用戶展現層
+- 業務邏輯處理層
+- 數據訪問讀取層MVC 設計模式通常用於實現應用程序的用戶界面層。
+
+從Web 瀏覽器我們發出請求，URL 地址如下所示
+
+![15請求完整圖片](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/15-3.png)
+
+- 當我們的請求到達服務器時，作為MVC 設計模式下的Controller，會接收請求並且處理它。
+- Controller 會創建模型(Model)，該模型是一個類文件，會進行數據的展示。
+- 在Molde 中，除了數據本身，Model 還包含從底層數據源(如數據庫)查詢數據後的邏輯信息。
+- 除了創建Model 之外，控制器還選擇View 並將Model 對像傳遞給該View。
+- 視圖僅負責呈現Modle 的數據。
+- 視圖會生成所需的HTML 以顯示模型數據，即Controller 提供給它的學生數據。
+- 然後，此HTML 通過網絡發送，最終呈現在發出請求的用戶面前。
+
+###### Model (模型)
+
+因此，在當前案例中Model，是由Student 類和管理學生數據的StudentRepository 類組成，如下所示。
+
+```csharp
+public class Student
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Major { get; set; }
+    }
+
+ public interface IStudentRepository
+    {
+        Student GetStudent(int id);
+        void Save(Student student);
+    }
+
+public class StudentRepository : IStudentRepository
+    {
+        public Student GetStudent(int id)
+        {
+           //邏輯實現 查詢學生詳情信息
+            throw new NotImplementedException();
+        }
+
+        public void Save(Student student)
+        {
+           //邏輯實現保存學生信息
+            throw new NotImplementedException();
+        }
+    }
+```
+
+我們使用**Student**類來保存學生數據，而**StudentRepository\**類則負責查詢並保存學生信息到數據庫中。如果要概括model的話，它就是MVC中用於\**包含一組數據的類和管理該數據的邏輯信息。** 表示數據的類是Student類，管理數據的類是StudentRepository類。
+
+如果您想知道我們為什麼使用`IStudentRepository`接口。我們不能只使用沒有接口的**StudentRepository**類。
+
+但是其實我們是可以的，但是我們使用接口的原因，是因為接口，允許我們使用依賴注入，而依賴注入則可以幫助我們創建**低耦合且易於測試的系統**。我們將在即將發布的視頻中詳細討論**依賴注入**。
+
+###### View -視圖
+
+MVC中的View應該只包含顯示Controller提供給它的Model數據的邏輯。您可以將視圖視為HTML模板。假設在我們的示例中，我們希望在HTML表中顯示**Student**數據。
+
+這種情況下的視圖會和**Student**對像一起提供。**Student**對像是將學生數據傳遞給視圖的模型。視圖的唯一作用是將學生數據顯示在HTML表中。這是視圖中的代碼。
+
+```html
+@model StudentManagement.Model.Student
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>学生页面详情</title>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>Id</td>
+        <td>@model.Id</td>
+      </tr>
+      <tr>
+        <td>名字</td>
+        <td>@model.Name</td>
+      </tr>
+      <tr>
+        <td>主修科目</td>
+        <td>@model.Major</td>
+      </tr>
+    </table>
+  </body>
+</html>
+```
+
+在MVC中，View僅負責呈現模型數據。視圖中不應該有復雜的邏輯。視圖中的邏輯必須非常少而且要小，並且它也必須僅用於呈現數據。如果到達表示邏輯過於復雜的點，請考慮使用**ViewMode** l或**View Component**。**View Components**是此版本MVC中的新增功能。我們可以在以後的課程中討論它。
+
+###### Controller 控制器
+
+當來自瀏覽器的請求到達我們的應用程序時，作為MVC 中的控制器，它處理傳入的http 請求並響應用戶的操作。
+
+在這種情況下，用戶已向URL發出請求(/student/details/1)，因此該請求被映射到**StudentController**中的**Details**方法，並向其傳遞**Student**的ID，在本例中為1.此映射為由我們的web應用程序中定義的路由規則完成。
+
+```csharp
+ public class StudentController:Controller
+    {
+        private IStudentRepository _studentRepository;
+        public StudentController(IStudentRepository studentRepository)
+        {
+            _studentRepository = studentRepository;
+        }
+        public IActionResult Details(int id)
+        {
+            Student model = _studentRepository.GetStudent(id);
+            return View(model);
+        }
+    }
+```
+
+如您所見，從**Details**方法中的代碼，控制器將生成模型，在這種情況下，Model是**Student**對象。要從基礎數據(如數據庫)源檢索**Student**數據，控制器使用**StudentRepository**類。
+
+一旦控制器使用所需數據構造了**Student**模型對象，它就會將該**Student**模型對像傳遞給視圖。然後，視圖生成所需的HTML，以顯示Controller提供給它的**Student**數據。然後，此HTML通過網絡發送給發出請求的用戶。
+
+###### 小結
+
+**MVC 是用於實現應用程序的用戶界面層的架構設計模式**
+
+- 模型(Model)：包含一組數據的類和管理該數據的邏輯信息。
+- View(視圖)：包含顯示邏輯，用於顯示Controller 提供給它的模型中數據。
+- Controller(控制器):處理Http 請求，調用模型，請選擇一個視圖來呈現該模型。
+
+正如您所看到的，在MVC 設計模式中，我們可以清楚地分離各個關注點，讓他們各司其職。每個組件都有一個非常具體的任務要做。
+
+------
+
