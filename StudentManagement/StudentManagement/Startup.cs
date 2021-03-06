@@ -23,6 +23,7 @@ namespace StudentManagement
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +51,7 @@ namespace StudentManagement
 
             //// 添加靜態文件中間件
             app.UseStaticFiles();
+
 
             // 使用UseFileServer而不是UseDefaultFiles和UseStaticFiles
             //FileServerOptions fileServerOptions = new FileServerOptions();
@@ -86,17 +88,26 @@ namespace StudentManagement
             //    });
             //});
 
-            app.UseFileServer();
+            //app.UseFileServer();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapGet("/", async context =>
+            //    {
+            //        //throw new Exception("您的請求在管道中發生了一些異常，請檢查。");
+            //        await context.Response.WriteAsync("Hello World ");
+            //        //await context.Response.WriteAsync("Hosting Environment: " + env.EnvironmentName);
+            //    });
+            //});
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    //throw new Exception("您的請求在管道中發生了一些異常，請檢查。");
-                    //await context.Response.WriteAsync("Hello World ");
-                    await context.Response.WriteAsync("Hosting Environment: " + env.EnvironmentName);
-                });
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
         }
     }
 }

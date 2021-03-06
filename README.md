@@ -639,3 +639,60 @@ MVC中的View應該只包含顯示Controller提供給它的Model數據的邏輯�
 
 ------
 
+##### 十三、在ASP.NET Core 中安裝MVC
+
+###### 兩個步驟學會在ASP.NET Core 配置MVC
+
+步驟1：在Startup.cs 文件中的Startup 類的**ConfigureServices()**方法中,見下方代碼。這行代碼將所需的MVC 服務添加到ASP.NET Core 中的依賴注入容器中。
+
+```csharp
+ services.AddControllersWithViews();
+```
+
+步驟2：在Configure()方法中，將**UseMvcWithDefaultRoute()**中間件添加到我們的應用程序的請求處理管道中。修改代碼，如下所示。
+
+```csharp
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+
+    app.UseStaticFiles();
+
+	app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+}
+```
+
+注意，我們在**UseMvcWithDefaultRoute()**中間件之前放置了**UseStaticFiles()**中間件。此順序很重要，因為如果請求是針對靜態文件(如圖像，CSS或JavaScript文件)，則**UseStaticFiles()**中間件將處理請求並使管道的其餘部分短路。
+
+因此, 如果請求是針對靜態文件, 則不會執行**UseMvcWithDefaultRoute () **中間件, 從而避免不必要的處理。
+
+另一方面,如果請求是MVC請求, **UseStaticFiles ()**中間件將把該請求傳遞給**UseMvcWithDefaultRoute()**中間件,中間件將處理請求並生成響應。
+
+請注意,除了**UseMvcWithDefaultRoute ()**中間件之外,我們還有**UseMvc ()**中間件。現在,讓我們使用**UseMvcWithDefaultRoute()**中間件。
+
+###### 添加HomeController
+
+在項目根文件夾中添加Controllers 文件夾。在"控制器"中添加一個新的控制器。複製並粘貼以下代碼。
+
+```csharp
+public class HomeController
+{
+    public string Index()
+    {
+        return "Hello from MVC";
+    }
+}
+```
+
+生成解決方案並向應用程序URL發出請求- `http://localhost:49119`。現在，您將看到瀏覽器中顯示的字符串- **"Hello from MVC"**。
+
+------
+
