@@ -696,3 +696,13 @@ public class HomeController
 
 ------
 
+##### 十四、ASP.NET Core 為什麼有AddMvc 和AddMvcCore 他們是什麼關係？
+
+- AddMvcCore()方法只添加核心MVC 服務。
+- AddMvc()方法添加了所有必需的MVC 服務。
+- AddMvc()方法在內部調用AddMvcCore()方法，以添加所有核心MVC 服務。
+- 因此，如果我們調用AddMvc()方法，則無需再次顯式調用AddMvcCore()方法。
+
+------
+
+##### 十五、ASP.NET Core MVC 中的Model 模型
