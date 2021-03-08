@@ -41,7 +41,11 @@ namespace StudentManagement.Controllers
         public ViewResult DetailsView()
         {
             Student model = _studentRepository.GetStudent(1);
-            return View(model);
+            // 相對路徑
+            //  return View("../Test/MyViews/Details");
+
+            // 絕對路徑
+            return View("MyViews/Details.cshtml");
         }
     }
 }

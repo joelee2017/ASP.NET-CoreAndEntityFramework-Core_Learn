@@ -787,3 +787,45 @@ Controller
 
 ------
 
+##### 十九、在ASP.NET CoreMvc 中的自定義視圖發現
+
+ASP.NET Core MVC 中有提供了幾個View()的重載方法。如果我們使用下面提供View()的重載方法，它將查找與Action 方法同名的視圖文件。
+
+- View()
+- View(object model)
+
+指定視圖文件路徑
+
+我們可以指定**視圖名稱**或**視圖文件路徑**。如果我們沒有指定視圖文件的路徑，默認情況下，MVC會在"Views/"文件夾中查找當前控制器方法名稱的".cshtml"文件。
+
+- 使用絕對路徑時，必須加上.cshtml擴展名。
+- 使用相對路徑時，必須去掉.cshtml擴展名。
+
+###### 絕對路徑：
+
+會項目的根目錄開始搜索，我們可以使用`**/或〜/**`。所以下面3 行代碼做的事情是一樣的。
+
+```csharp
+return View("MyViews/Test.cshtml");
+return View("/MyViews/Test.cshtml");
+return View("~/MyViews/Test.cshtml");
+```
+
+###### 相對視圖文件路徑
+
+指定視圖文件路徑時，我們也可以使用相對路徑。如果你要的返回值在文件夾層次結構中超過了2個深度，請使用`../`兩次
+
+```csharp
+ return View("../Test/Update");
+ return View("../../MyViews/Details");
+```
+
+###### 其他view()重載方法
+
+| 重載方法                            |                     描述                     |
+| ----------------------------------- | :------------------------------------------: |
+| View(object model)                  | 使用此重載方法將模型數據從控制器傳遞到視圖。 |
+| View(string viewName, object model) |           傳遞視圖名稱和模型數據。           |
+
+------
+
