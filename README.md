@@ -882,3 +882,22 @@ return View("~/MyViews/Test.cshtml");
 與**ViewData**和**ViewBag**不同，強類型視圖提供編譯時類型檢查和智能提示。通過智能提示支持，我們可以提高工作效率，錯誤拼寫的機率幾乎為零。如果我們確實犯了任何錯誤，我們將在編譯時看到錯誤，而不是在運行時才看到他們。
 
 因此，建議始終使用強類型視圖將數據從控制器傳遞到視圖。
+
+------
+
+##### 二十三、ASP.NET CoreMVC 中的ViewModel
+
+###### 為什麼我們需要在ASP.NET Core MVC 中使用ViewModel
+
+在某些情況下，模型對象可能無法包含視圖所需的所有數據。這個時候就需要使用ViewModel 了。它會包含視圖所需的所有數據。
+
+###### ViewModel 示例
+
+ViewModel類可以存在於ASP.NET Core MVC項目的任何位置，但為了管理方便，我們通常將它們放在一個名為ViewModels的文件夾中
+
+此ViewModel 類包含視圖所需的所有數據。通常，我們使用ViewModels 在View 和Controller 之間傳遞數據。因此，ViewModels 也簡稱為數據傳輸對像或DTO。
+
+數據傳輸對象==DTO
+
+------
+

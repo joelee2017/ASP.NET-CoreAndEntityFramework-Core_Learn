@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StudentManagement.Model;
+using StudentManagement.ViewModels;
 
 namespace StudentManagement.Controllers
 {
@@ -56,7 +57,7 @@ namespace StudentManagement.Controllers
         {
             Student model = _studentRepository.GetStudent(1);
             //使用ViewData將PageTitle和Student模型傳给View
-            ViewData["PageTitle"] = "Student Details";
+            ViewData["PageTitle"] = "Student DetailsViewData";
             ViewData["Student"] = model;
 
             return View();
@@ -68,7 +69,7 @@ namespace StudentManagement.Controllers
             Student model = _studentRepository.GetStudent(1);
             //將PageTitle和Student模型對象存儲在ViewBag
             //我們正在使用動態屬性PageTitle和Student
-            ViewBag.PageTitle = "Student Details";
+            ViewBag.PageTitle = "Student DetailsViewBag";
             ViewBag.Student = model;
 
             return View();
@@ -79,9 +80,23 @@ namespace StudentManagement.Controllers
         {
             Student model = _studentRepository.GetStudent(1);
 
-            ViewBag.PageTitle = "Student Details";
+            ViewBag.PageTitle = "Student DetailsModel";
 
             return View(model);
+        }
+
+        // /home/DetailsViewModel
+        public ViewResult DetailsViewModel()
+        {
+            //實體化HomeDetailsViewModel并存儲Student詳细信息和PageTitle
+            HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
+            {
+                Student = _studentRepository.GetStudent(1),
+                PageTitle = "Student DetailsViewModel"
+            };
+
+            //將ViewModel傳给View()方法
+            return View(homeDetailsViewModel);
         }
     }
 }
