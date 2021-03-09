@@ -1,0 +1,21 @@
+﻿@using StudentManagement.Model
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <h3>@ViewData["PageTitle"]</h3>
+
+    @{ var student = ViewData["Student"] as Student; }
+
+    <div>
+        姓名 : @student.Name
+    </div>
+    <div>
+        信箱 : @student.Email
+    </div>
+    <div>
+        主修科目 : @student.Major
+    </div>
+</body>
+</html>

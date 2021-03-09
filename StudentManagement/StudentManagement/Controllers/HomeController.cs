@@ -25,12 +25,14 @@ namespace StudentManagement.Controllers
             return _studentRepository.GetStudent(1).Name;
         }
 
+        // home/Details
         public JsonResult Details()
         {
             Student model = _studentRepository.GetStudent(1);
             return Json(model);
         }
 
+        // home/DetailsObject
         public ObjectResult DetailsObject()
         {
             Student model = _studentRepository.GetStudent(1);
@@ -38,6 +40,7 @@ namespace StudentManagement.Controllers
 
         }
 
+        // home/DetailsView
         public ViewResult DetailsView()
         {
             Student model = _studentRepository.GetStudent(1);
@@ -46,6 +49,17 @@ namespace StudentManagement.Controllers
 
             // 絕對路徑
             return View("MyViews/Details.cshtml");
+        }
+
+        // home/DetailsViewData
+        public ViewResult DetailsViewData()
+        {
+            Student model = _studentRepository.GetStudent(1);
+            //使用ViewData將PageTitle和Student模型傳给View
+            ViewData["PageTitle"] = "Student Details";
+            ViewData["Student"] = model;
+
+            return View();
         }
     }
 }
