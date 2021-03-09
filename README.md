@@ -1042,3 +1042,62 @@ invalidoperationexception: The layout page "/Views/Shared/_Layout.cshtml" cannot
 
 ------
 
+##### 二十六、什麼是_ViewStart.cshtml 文件
+
+###### 設置Layout 屬性
+
+我們使用Layout屬性將視圖與佈局視圖相關聯。沒有_ViewStart.cshtml文件，我們需要在每個視圖中的設置Layout屬性。這違反了DRY (Don't Repeat Yourself)原則，並具有以下缺點:
+
+冗餘代碼。
+維護成高。
+
+如果要使用其他佈局文件，還需要更新每個視圖。這工程不僅是繁瑣且耗時，而且還容易出錯，想想你有400 個視圖文件其中200 個要改。
+
+###### ASP.NET Core MVC 中的_ViewStart.cshtml 文件是什麼
+
+它是ASP.NET Core MVC中的一個特殊文件。此文件中的代碼在調用單個視圖中的代碼之前先執行。所以這意味著，我們可以將該公共代碼移動到_ViewStart.cshtml文件中，而不是在每個單獨的視圖中設置Layout屬性。
+
+```css
+@{
+    Layout = "_Layout";
+}
+```
+
+通過在`_ViewStart.cshtml`文件中設置Layout屬性，維護我們的應用程序變得更加容易。將來，如果我們想要使用不同的佈局文件，我們只需要在`_ViewStart.cshtml`中的一個位置更改代碼。
+
+###### _ViewStart.cshtml 文件支持分層
+
+我們通常將**ViewStart**文件放在**Views**文件夾中。由於此文件支持分層，我們也可以將它放在**Views**文件夾中的任何子文件夾中。
+
+**Views**文件夾中的所有視圖都將使用**Views**中`ViewStart`文件中指定的佈局頁面，但Home文件夾中的視圖將使用Home文件夾中ViewStart文件中指定的佈局頁面。
+
+請注意：如果要使用與`_ViewStart.cshtml`中指定的佈局文件不同的佈局文件，可以通過在單個視圖中設置Layout屬性來實現。
+
+如果希望在沒有佈局視圖的情況下渲染視圖，也可以將Layout 屬性設置為null。
+
+###### 邏輯判斷調用佈局視圖
+
+在ASP.NET Core MVC 應用程序中，我們可以有多個佈局視圖。比方說，我們的應用程序中有以下2 個佈局視圖。
+
+```html
+ _AdminLayout.cshtml
+_NonAdminLayout.cshtml
+```
+
+在`_ViewStart.cshtml`中可以通過邏輯判斷登錄用戶角色來選擇對應的佈局視圖
+
+```csharp
+@{
+    if (User.IsInRole("Admin"))
+    {
+        Layout = "_AdminLayout";
+    }
+    else
+    {
+        Layout = "_NonAdminLayout";
+    }
+}
+```
+
+------
+
