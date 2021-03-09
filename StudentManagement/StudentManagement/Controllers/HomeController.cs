@@ -73,5 +73,15 @@ namespace StudentManagement.Controllers
 
             return View();
         }
+
+        // /home/DetailsModel
+        public ViewResult DetailsModel()
+        {
+            Student model = _studentRepository.GetStudent(1);
+
+            ViewBag.PageTitle = "Student Details";
+
+            return View(model);
+        }
     }
 }
