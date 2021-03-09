@@ -964,3 +964,81 @@ _Layout.cshtml 文件中自動生成的HTML視圖
 
 ------
 
+##### 二十五、ASP.NET Core MVC 中布局頁面中 Sections
+
+###### 佈局視圖中的 Sections
+
+ASP.NET Core MVC 中的佈局頁面還可以包含一些節點(Section)。節點(Section)可以是選填的也可以是必填的。它提供了一種方法來讓某些頁面元素有組織的放置在一起。
+
+舉個例子
+您有一個自定義 JavaScript 文件，項目中的只有一些視圖才需要這些文件。在結束標記之前將 JavaScript文件放在頁面底部是一個好習慣。但是如果所有視圖都需要自定義 JavaScript 文件，那麼我們可以將它放在 Layout 頁面中，如下所示。
+
+```html
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+
+    <script src="~/js/CustomScript.js"></script>
+</body>
+</html>
+```
+
+我們不需要在每個視圖中使用自定義 JavaScript 文件。假設我們只在 Details 視圖中需要它，而在其他視圖中不需要它。我們就可以使用一個節點(Section)。
+
+###### 渲染 Sections
+
+在佈局頁面中，在要渲染節內容的位置調用 RenderSection()方法。在我們的例子中，我們希望 JavaScript 文件包含在結束標記之前。我們把@RenderSection() 放置在結束標記之前。
+
+RenderSection()方法有 2 個參數。第一個參數指定節的名稱。第二個參數參數指定該部分是必需的還是可選的。
+
+```html
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width"/>
+    <title>@ViewBag.Title</title>
+  </head>
+  <body>
+    <div>
+      @RenderBody()
+    </div>
+
+    @RenderSection("Scripts", required: false)
+  </body>
+</html>
+```
+
+如果 required 設置為 true，而內容視圖不包含該部分，則會出現以下錯誤。
+
+```javascript
+invalidoperationexception: The layout page "/Views/Shared/_Layout.cshtml" cannot
+  find the section "Scripts" in the content page "/Views/Home/Index.cshtml" .;
+```
+
+使佈局部分可選
+有兩個選項可將佈局部分標記為可選
+
+選項 1：將 RenderSection()方法的必需參數設置為 false
+
+```css
+@rendersection ("Scripts", required: false);
+```
+
+選項 2：使用 IsSectionDefined()方法
+
+```css
+@if (IsSectionDefined("Scripts")) {
+  @rendersection ("Scripts", required: false);
+}
+```
+
+提供節內容
+要使用節點，那麼每個視圖都必須包含具有相同名稱的部分。
+
+------
+

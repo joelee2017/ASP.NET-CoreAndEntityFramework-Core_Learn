@@ -12,7 +12,10 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\css\" />
-    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\CustomScript.js" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,5 @@
 ﻿@model StudentManagement.ViewModels.HomeDetailsViewModel
-@{ 
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "DetailsViewModel";
 }
@@ -15,3 +15,7 @@
 <div>
     主修科目 : @Model.Student.Major
 </div>
+
+@section Scripts{
+    <script src="~/js/CustomScript.js"></script>
+}
