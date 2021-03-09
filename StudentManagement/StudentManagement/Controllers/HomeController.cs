@@ -25,14 +25,14 @@ namespace StudentManagement.Controllers
             return _studentRepository.GetStudent(1).Name;
         }
 
-        // home/Details
+        // /home/Details
         public JsonResult Details()
         {
             Student model = _studentRepository.GetStudent(1);
             return Json(model);
         }
 
-        // home/DetailsObject
+        // /home/DetailsObject
         public ObjectResult DetailsObject()
         {
             Student model = _studentRepository.GetStudent(1);
@@ -40,7 +40,7 @@ namespace StudentManagement.Controllers
 
         }
 
-        // home/DetailsView
+        // /home/DetailsView
         public ViewResult DetailsView()
         {
             Student model = _studentRepository.GetStudent(1);
@@ -51,13 +51,25 @@ namespace StudentManagement.Controllers
             return View("MyViews/Details.cshtml");
         }
 
-        // home/DetailsViewData
+        // /home/DetailsViewData
         public ViewResult DetailsViewData()
         {
             Student model = _studentRepository.GetStudent(1);
             //使用ViewData將PageTitle和Student模型傳给View
             ViewData["PageTitle"] = "Student Details";
             ViewData["Student"] = model;
+
+            return View();
+        }
+
+        // /home/DetailsViewBag
+        public ViewResult DetailsViewBag()
+        {
+            Student model = _studentRepository.GetStudent(1);
+            //將PageTitle和Student模型對象存儲在ViewBag
+            //我們正在使用動態屬性PageTitle和Student
+            ViewBag.PageTitle = "Student Details";
+            ViewBag.Student = model;
 
             return View();
         }

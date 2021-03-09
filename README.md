@@ -836,7 +836,7 @@ return View("~/MyViews/Test.cshtml");
 在ASP.NET Core MVC 中，有3 種方法可以將數據從控制器傳遞到視圖:
 
 1. 使用ViewData 弱類型
-2. 使用ViewBag
+2. 使用ViewBag 弱類型
 3. 使用強類型模型對象。這也稱為**強類型視圖**。
 
 ###### ViewData
@@ -851,6 +851,27 @@ return View("~/MyViews/Test.cshtml");
 - 我們只會在運行時才知道這些錯誤。
 - 出於這個原因，我們通常不使用ViewData。
 - 當我們使用ViewData 時，我們最終會創建一個弱類型的視圖。
+
+------
+
+##### 二十一、ASP.NETCoreMVC中的ViewBag
+
+**ViewBag**是**ViewData**的包裝器。使用**ViewData**，我們使用string類型的鍵名來存儲和查詢數據。而使用**ViewBag**，我們則使用的是動態屬性而不是字符串鍵。
+
+###### ViewData 和ViewBag 對比
+
+- **ViewData**和**ViewBag**兩者都可以從控制器傳遞數據到視圖
+- **ViewBag**是**ViewData**的包裝器
+- 它們都是一個弱類型的視圖
+- 使用**ViewData**，我們使用字符串鍵來存儲和查詢**ViewData**字典中的數據
+- 使用**ViewBag**，我們使用動態屬性來存儲和查詢數據。
+- 雙方的**ViewData**和**ViewBag**都是在運行時動態解析。
+- 雙方的**ViewData**和**ViewBag**不提供編譯時類型檢查，因此我們沒有得到智能提示。
+- 由於我們沒有智能提示，因此編寫代碼的速度降低，錯誤拼寫的可能性也很高。
+- 我們只會在運行時才會看到這些錯誤。
+- 出於這個原因，我們通常不使用**ViewData**或**ViewBag**。
+- 將數據從控制器傳遞到視圖的首選方法是使用強類型模型對象。
+- 使用強類型模型對象可創建強類型視圖
 
 ------
 
