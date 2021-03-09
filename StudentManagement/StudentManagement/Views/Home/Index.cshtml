@@ -1,36 +1,30 @@
 ﻿@model IEnumerable<StudentManagement.Model.Student>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>學生頁面詳情</title>
-</head>
-<body>
-
-    <table>
-        <thead>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "學生頁面詳情";
+}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>名字</th>
+            <th>主修科目名稱</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
             <tr>
-                <th>ID</th>
-                <th>名字</th>
-                <th>主修科目名稱</th>
+                <td>
+                    @student.Id
+                </td>
+                <td>
+                    @student.Name
+                </td>
+                <td>
+                    @student.Major
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var student in Model)
-            {
-                <tr>
-                    <td>
-                        @student.Id
-                    </td>
-                    <td>
-                        @student.Name
-                    </td>
-                    <td>
-                        @student.Major
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-</body>
-</html>
+        }
+    </tbody>
+</table>

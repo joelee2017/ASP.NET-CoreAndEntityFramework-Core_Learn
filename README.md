@@ -901,5 +901,66 @@ ViewModel類可以存在於ASP.NET Core MVC項目的任何位置，但為了管�
 
 ------
 
+##### 二十四、ASP.NET CoreMVC 中的佈局顯示
 
+###### 為什麼需要佈局視圖
+
+大多數Web 應用程序網站通常都有以下部分組成
+
+- Header-頭部
+- Footer-頁腳
+- Menu-導航菜單
+- View-具體內容的視圖
+
+![28 1](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/28-1.png)
+
+如果沒有佈局視圖，我們將在Web 程序中的每個視圖中，重複顯示很多HTML 代碼，比如選單欄，導航信息，關於我們，footer 頁腳等等。在每個視圖中都有這個重複的
+
+使用佈局視圖，在所有視圖中保持一致的外觀變得更加容易，因為我們只有一個要修改的佈局視圖文件，如果有任何更改。然後更改後將立即反映在整個應用程序的所有視圖中。
+
+###### ASP.NET Core MVC 中的佈局顯示
+
+- 就像常規視圖一樣，佈局視圖也具有`.cshtml`擴展名的文件
+- 您可以將佈局視圖視為ASP.NET Web Form 中的母版頁。
+- 由於佈局視圖不特定於控制器，我們通常放在"Views"文件夾的子文件夾"Shared"中。
+- 默認情況下，在ASP.NET Core MVC中，佈局視圖文件名為`\_Layout.cshtml`。
+- 在ASP.NET Core MVC 中，有一些視圖文件，如佈局的視圖，_ViewStart.cshtml 和_ViewImports.cshtml 等其他.cshtml 文件的文件名以下劃線開頭
+- 這些文件名中的前下劃線表示這些文件不是直接面向瀏覽器。
+- 也可以在單個應用程序中包含多個佈局視圖文件。比如一個佈局視圖文件服務為管理員用戶，另外一個不同的佈局視圖文件服務於普通用戶。
+
+## 創建佈局創建佈局視圖
+右鍵單擊Views文件夾並添加"Shared"文件夾。
+
+右鍵單擊" Shared "文件夾，然後選擇"添加" - "新建項"
+
+在"添加新項"窗口中搜索佈局,一般在web 下的ASP.NET
+
+選擇"Razor 佈局"並單擊"添加"按鈕
+
+名為_Layout.cshtml 的文件將添加到"Shared"文件夾中
+
+_Layout.cshtml 文件中自動生成的HTML視圖
+
+- 右鍵單擊**Views**文件夾並添加"Shared"文件夾。
+- 右鍵單擊" **Shared** "文件夾，然後選擇"添加" - "新建項"
+- 在"添加新項"窗口中搜索佈局,一般在web 下的ASP.NET
+- 選擇"Razor 版面配置"並單擊"添加"按鈕
+- 名為_Layout.cshtml 的文件將添加到"Shared"文件夾中
+- _Layout.cshtml 文件中自動生成的HTML
+
+請注意，標準**html**，**head**，**title**和**body**元素位於此佈局視圖文件中。由於我們現在將它們放在佈局視圖文件中，因此我們不必在每個視圖中重複所有這些HTML。
+
+###### 使用佈局視圖
+
+要使用佈局視圖(\_Layout.cshtml)渲染視圖，需設置Layout屬性。
+
+```html
+@{ 
+	Layout ="~/Views/Shared/_Layout.cshtml";
+}
+```
+
+**我們有一種更好的方法來設置Layout 屬性，而不是在每個視圖中設置它。**
+
+------
 
