@@ -1071,6 +1071,12 @@ invalidoperationexception: The layout page "/Views/Shared/_Layout.cshtml" cannot
 
 **Views**文件夾中的所有視圖都將使用**Views**中`ViewStart`文件中指定的佈局頁面，但Home文件夾中的視圖將使用Home文件夾中ViewStart文件中指定的佈局頁面。
 
+我們在`Views`文件夾中放置了一個`ViewStart`文件，在`Home`子文件夾中放置了另一個`ViewStart`文件。
+
+**Home**子文件夾中`ViewStart`文件中指定的佈局頁面,將覆蓋**Views**文件夾中`ViewStart`文件中指定的佈局頁面。
+
+這意味著，**Views**文件夾中的所有視圖都將使用**Views**中`ViewStart`文件中指定的佈局頁面，但Home文件夾中的視圖將使用Home文件夾中ViewStart文件中指定的佈局頁面。
+
 請注意：如果要使用與`_ViewStart.cshtml`中指定的佈局文件不同的佈局文件，可以通過在單個視圖中設置Layout屬性來實現。
 
 如果希望在沒有佈局視圖的情況下渲染視圖，也可以將Layout 屬性設置為null。
@@ -1098,6 +1104,31 @@ _NonAdminLayout.cshtml
     }
 }
 ```
+
+------
+
+##### 二十七、ASP.NET Core MVC 中的_ViewImports.cshtml 文件
+
+`_ViewImports.cshtml`文件通常放在Views 文件夾中。它用於包含公共命名空間，因此我們不必在每個視圖中來引用這些需要的命名空間。
+
+例如, 如果我們在Viewimport 文件中包含以下2 個命名空間, 則這兩個命名空間中的所有類型都可用於"Home" 文件夾中的每個視圖, 而無需再次引入完整的命名空間
+
+```csharp
+@using StudentManagement.Models;
+@using StudentManagement.ViewModels;
+```
+
+**_ViewStart**文件和**_ViewImports.cshtml**文件均支持分層，除了將它放在Views文件夾中之外，我們還可以在Views文件夾的"Home"子文件夾中放置另一個_ViewImports.cshtml 。
+
+###### _ViewImports.cshtml 文件是分層的
+
+**_ViewStart**文件和**_ViewImports.cshtml**文件均支持分層，除了將它放在Views文件夾中之外，我們還可以在Views文件夾的"Home"子文件夾中放置另一個_ViewImports.cshtml 。
+
+![31 2](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/31-2.png)
+
+在文件Home的文件夾中的`_ViewImports.cshtml`將覆蓋在Shared文件夾中的`_ViewImports.cshtml`文件指定的設置。
+
+請注意：如果在視圖中指定了設置，該設置將覆蓋文件夾中父`_ViewImports.cshtml`文件中的匹配設置。
 
 ------
 
