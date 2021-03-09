@@ -20,17 +20,40 @@ namespace StudentManagement.Controllers
         }
 
 
-        //返回学生的名字
-        public string Index()
+        //返回學生的名字
+        //public string Index()
+        //{
+        //    return _studentRepository.GetStudent(1).Name;
+        //}
+
+        //返回學生的名字
+        //  /home
+        public ViewResult Index()
         {
-            return _studentRepository.GetStudent(1).Name;
+            //查詢所有的學生信息
+            var model = _studentRepository.GetAllStudents();
+            //將學生列表傳到視圖
+            return View(model);
         }
 
         // /home/Details
-        public JsonResult Details()
+        //public JsonResult Details()
+        //{
+        //    Student model = _studentRepository.GetStudent(1);
+        //    return Json(model);
+        //}
+
+        public ViewResult Details()
         {
-            Student model = _studentRepository.GetStudent(1);
-            return Json(model);
+            //實體化HomeDetailsViewModel並存儲Student詳细信息和PageTitle
+            HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
+            {
+                Student = _studentRepository.GetStudent(1),
+                PageTitle = "Student Details"
+            };
+
+            //將ViewModel對象傳给View()方法
+            return View(homeDetailsViewModel);
         }
 
         // /home/DetailsObject

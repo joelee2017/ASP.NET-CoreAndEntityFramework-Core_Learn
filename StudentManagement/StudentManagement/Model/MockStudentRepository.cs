@@ -5,7 +5,7 @@ namespace StudentManagement.Model
 {
     public class MockStudentRepository : IStudentRepository
     {
-        private List<Student> _studentList;
+        private readonly List<Student> _studentList;
 
         public MockStudentRepository()
         {
@@ -22,6 +22,11 @@ namespace StudentManagement.Model
         {
             // 返回學生名字
             return _studentList.FirstOrDefault(a => a.Id == id);
+        }
+
+        public IEnumerable<Student> GetAllStudents()
+        {
+            return _studentList;
         }
     }
 }
