@@ -1210,4 +1210,31 @@ libman.json 是庫管理器清單文件。
 
 ------
 
-三十、
+##### 三十、ASP.NET Core 中的Taghelper
+
+###### 什麼是Tag Helpers
+
+Taghelper是服務器端組件。它們在服務器上處理，以在`Razor`文件中創建和渲染`HTML`元素。如果您對以前版本的ASP.NET MVC有任何經驗，那麼您可能熟悉`HTMLTaghelper`。Tag Helpers類似於HTML Taghelper。ASP.NET Core有許多內置的Tag Helper用於常見任務，例如生成鏈接，創建表單，加載數據等。
+
+###### 導入內置Tag Helpers
+
+要在整個應用程序中的所有視圖使用內置Taghelper，需要在`_ViewImports.cshtml`文件導入Taghelper。要導入Taghelper，我們使用`@addTagHelper`指令。
+
+```razor
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, AuthoringTagHelpers
+```
+
+通配符`\*`表示我們要導入所有Tag Helpers,而Microsoft.AspNetCore.Mvc.TagHelpers是包含內置Taghelper的組件
+
+###### A 標籤的Tag Helper
+
+A標籤的Tag Helper可通過添加新屬性來增強標準的HTML`(<a></a>)`標籤。比如：
+
+```razor
+asp-controller
+asp-action
+asp-route-{value}
+```
+
+所呈現的A標籤的`Href`屬性值由這些`asp`屬性的值決定。
