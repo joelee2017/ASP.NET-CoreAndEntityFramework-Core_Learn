@@ -1238,3 +1238,58 @@ asp-route-{value}
 ```
 
 所呈現的A標籤的`Href`屬性值由這些`asp`屬性的值決定。
+
+------
+
+##### 三十一、ASP.NET Core Image 標記助手(TagHelper)
+
+###### 如何禁用瀏覽器緩存
+
+在本章節中，我們將通過一個示例討論ASP.NET Core 中的Image Taghelper。
+
+###### 瀏覽器緩存
+
+當我們訪問網頁時，大多數現代瀏覽器會緩存該網頁的圖像。當我們再次訪問該頁面時，瀏覽器不再從Web 服務器再次下載相同的圖像，而是從緩存中提供圖像。在大多數情況下，這不是問題，因為圖像不經常改變。但是這對於開發人員來說，相當的不友好。。。
+
+###### 禁用瀏覽器緩存
+
+由於某種原因，如果您不希望瀏覽器使用它的緩存，您可以禁用它。例如，要在Google Chrome 中禁用緩存
+
+- 使用F12 鍵，啟動Browser Developer Tools
+- 單擊"Network"選項卡
+- 選中"Disable cache"複選框
+
+![37 1](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/37-1.png)
+
+> 禁用瀏覽器緩存的一個明顯問題是，每次訪問該頁面時都必須從服務器下載圖片。
+
+###### ASP.NET Core 中的Image Taghelper
+
+從性能角度來看，只有在服務器上更改了圖片才能下載圖片。如果圖像未更改，請使用瀏覽器緩存中的圖像。這意味著我們將擁有兩全其美的優勢。
+
+Image Tag Helper可以幫助我們實現這一效果。要使用Image Taghelper，請包含`asp-append-version`屬性並將其設置為true。
+
+```html
+<img src="~/images/noimage.jpg" asp-append-version="true"/>
+```
+
+Copy
+
+Image TagHelper增強了`<img>`標籤，為靜態圖像文件提供**緩存破壞行為**。將圖像的內容，生成唯一的散列值並將其附加到圖片的URL。此唯一字符串會提示瀏覽器從服務器重新加載圖片，而不是從瀏覽器緩存重新加載。
+
+```html
+<img
+  class="card-img-top"
+  src="/images/noimage.jpg?v=IqNLbsazJ7ijEbbyzWPke-xWxkOFaVcgzpQ4SsQKBqY"
+/>
+```
+
+Copy
+
+每次服務器上的圖像更改時，都會計算並緩存新的哈希值。如果圖像未更改，則不會重新計算哈希值。使用此唯一哈希值，瀏覽器會跟踪服務器上的圖像內容是否已更改。
+
+###### 哈希緩存行為
+
+Image Taghelper使用`Sha512`哈希計算利用Web服務器上的緩存支持來存儲給定文件
+
+Image Taghelper使用Web服務器上的緩存服務來存儲文件已計算的`Sha512`哈希值。如果多次請求文件，則不重新計算哈希值。只有當磁盤上的的文件發生更改時，將會重新計算生成新的哈希值，緩存才會失效。

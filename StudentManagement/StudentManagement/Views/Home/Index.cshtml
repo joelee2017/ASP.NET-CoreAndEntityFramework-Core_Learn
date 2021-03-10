@@ -27,7 +27,7 @@
                         @student.Major
                     </td>
                     <td>
-                        <a href="#" class="btn btn-link">查看</a>
+                        <a asp-controller="home" asp-action="details" asp-route-id="@student.Id" class="btn btn-link">查看</a>
                         <a href="#" class="btn btn-link">编輯</a>
                         <a href="#" class="btn btn-link">删除</a>
                     </td>
@@ -45,8 +45,8 @@
             <div class="card-header">
                 <h3>@student.Name</h3>
             </div>
-            <img class="card-img-top" src="~/images/banner.jpg" />
-            <div class="card-footer text-center">
+            <img class="card-img-top" src="~/images/banner.jpg"  asp-append-version="true"/>
+            <div class="card-footer text-center">                
                 <a href="/home/details/@student.Id" class="btn btn-primary">查看</a>
                 <a asp-controller="home" asp-action="details" asp-route-id="@student.Id"  class="btn btn-primary">Tag Helper查看</a>
                 <a href="#" class="btn btn-primary">编輯</a>
