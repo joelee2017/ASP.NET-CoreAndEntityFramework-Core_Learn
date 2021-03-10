@@ -1109,13 +1109,24 @@ _NonAdminLayout.cshtml
 
 ##### 二十七、ASP.NET Core MVC 中的_ViewImports.cshtml 文件
 
-`_ViewImports.cshtml`文件通常放在Views 文件夾中。它用於包含公共命名空間，因此我們不必在每個視圖中來引用這些需要的命名空間。
+`_ViewImports.cshtml`文件通常放在Views 文件夾中。**它用於包含公共命名空間**，因此我們不必在每個視圖中來引用這些需要的命名空間。
 
 例如, 如果我們在Viewimport 文件中包含以下2 個命名空間, 則這兩個命名空間中的所有類型都可用於"Home" 文件夾中的每個視圖, 而無需再次引入完整的命名空間
 
 ```csharp
 @using StudentManagement.Models;
 @using StudentManagement.ViewModels;
+```
+
+注意，@using 指令用於包含公共命名空間。除@using 指令外，_ViewImports.cshtm文件還支持以下指令。
+
+```java
+@addTagHelper
+@removeTagHelper
+@tagHelperPrefix
+@model
+@inherits
+@inject
 ```
 
 **_ViewStart**文件和**_ViewImports.cshtml**文件均支持分層，除了將它放在Views文件夾中之外，我們還可以在Views文件夾的"Home"子文件夾中放置另一個_ViewImports.cshtml 。
@@ -1131,4 +1142,22 @@ _NonAdminLayout.cshtml
 請注意：如果在視圖中指定了設置，該設置將覆蓋文件夾中父`_ViewImports.cshtml`文件中的匹配設置。
 
 ------
+
+##### 二十八、ASP.NET Core MVC 中的屬性路由
+
+使用屬性路由，我們使用`Route()`屬性來定義路由。我們可以在`Controller`或Controller的操作方法上應用`Route`屬性。
+
+使用屬性路由時, 路由屬性需要在實際使用它們的操作方法上方設置。
+
+屬性路由比傳統路由提供了更大的靈活性。
+
+屬性路由支持層次結構。
+
+需要記住的一個非常重要的一點是,如果操作方法上的`路由模板以/或 ~/開頭`,則控制器路由模板不會與操作方法路由模板組合在一起。
+
+屬性路由中自定義路由，屬性路由通過將標記括在方括號([])中來支持標記替換。標記[controller]和[action]將替換為定義路徑的控制器名稱和操作名稱的值。
+
+
+
+
 

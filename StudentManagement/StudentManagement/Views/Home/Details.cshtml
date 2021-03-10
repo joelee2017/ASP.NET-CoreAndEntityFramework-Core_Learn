@@ -1,7 +1,16 @@
-﻿
+﻿@model HomeDetailsViewModel
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h3>@ViewBag.PageTitle</h3>
+<div>
+    姓名 : @Model.Student.Name
+</div>
+<div>
+    信箱 : @Model.Student.Email
+</div>
+<div>
+    主修科目 : @Model.Student.Major
+</div>
 

@@ -19,6 +19,11 @@ namespace StudentManagement.Controllers
             _studentRepository = studentRepository;
         }
 
+        public ViewResult IndexRoute()
+        {
+            ViewData["PageTitle"] = "Student IndexRoute";
+            return View();
+        }
 
         //返回學生的名字
         //public string Index()
@@ -43,12 +48,14 @@ namespace StudentManagement.Controllers
         //    return Json(model);
         //}
 
-        public ViewResult Details()
+        public ViewResult Details(int? id)
         {
+            id = id.Value < 1 ? 1 : id.Value;
+            id = id.Value > 3 ? 1 : id.Value;
             //實體化HomeDetailsViewModel並存儲Student詳细信息和PageTitle
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
-            {
-                Student = _studentRepository.GetStudent(1),
+            {               
+                Student = _studentRepository.GetStudent(id ?? 1),
                 PageTitle = "Student Details"
             };
 
@@ -123,3 +130,4 @@ namespace StudentManagement.Controllers
         }
     }
 }
+
