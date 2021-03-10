@@ -1293,3 +1293,82 @@ Copy
 Image Taghelper使用`Sha512`哈希計算利用Web服務器上的緩存支持來存儲給定文件
 
 Image Taghelper使用Web服務器上的緩存服務來存儲文件已計算的`Sha512`哈希值。如果多次請求文件，則不重新計算哈希值。只有當磁盤上的的文件發生更改時，將會重新計算生成新的哈希值，緩存才會失效。
+
+------
+
+##### 三十二、ASP.NET Core 環境(environment) Taghelper
+
+###### ASP.NET核心環境標記幫助器
+
+Environment tag helper支持根據應用程序環境呈現不同的內容。使用`ASPNETCORE_ENVIRONMENT`變量設置應用程序環境名稱。
+
+如果應用程序環境是"Development"，則此示例加載非縮小的bootstrap css 文件。
+
+```xml
+<environment include="Development">
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+</environment>
+```
+
+如果應用程序環境是"Staging"或者"Production"，則此示例從CDN(內容傳送網絡)加載縮小的bootstrap css 文件。
+
+```xml
+<environment include="Staging,Production">
+    <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous">
+</environment>
+```
+
+" **include** "屬性接受將單個環境環境名稱以逗號分隔的形式生成列表。在`<environment>`tag helper上，我們還有" **exclude** "屬性,當託管環境與exclude屬性值中列出的環境名稱不匹配時，將呈現標籤中的內容。
+
+如果應用程序環境不是"Development"，則此示例從CDN(內容分發網絡)加載縮小的bootstrap css 文件。
+
+```xml
+<environment exclude="Development">
+    <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous">
+</environment>
+```
+
+`<link>`元素上的" **integrity** "屬性用於檢查**子資源完整性**。 **Subresource Integrity** (簡稱SRI)是一種安全功能，允許瀏覽器檢查被檢索的文件是否被惡意更改。當瀏覽器下載文件時，它會重新計算哈希並將其與"完整性"屬性哈希值進行比較。如果哈希值匹配，則瀏覽器允許下載文件，否則將被阻止。
+
+###### 如果CDN 失敗怎麼辦？
+
+如果CDN 出現故障或由於某種原因，我們的應用程序無法訪問CDN，我們希望我們的應用程序從我們自己的應用程序Web 服務器加載縮小的bootstrap 文件(bootstrap.min.css)。
+
+```xml
+<environment include="Development">
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+</environment>
+
+<environment exclude="Development">
+    <link rel="stylesheet"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+            href="https://sstackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
+            asp-fallback-test-class="sr-only" asp-fallback-test-property="position"
+            asp-fallback-test-value="absolute"
+            asp-suppress-fallback-integrity="true"/>
+</environment>
+```
+
+
+
+如果應用程序環境是" **Development** "，則從我們的應用程序Web服務器加載非縮小的bootstrap的css文件(bootstrap.css)。如果應用程序環境不是" **Development** "，則從CDN加載縮小的bootstrap css文件(bootstrap.min.css)。
+
+使用`asp-fallback-href`屬性指定回退源。這意味著，如果CDN關閉，我們的應用程序將回退並從我們自己的應用程序Web服務器加載縮小的bootstrap文件(bootstrap.min.css)。
+
+以下3 個屬性及其相關值用於檢查CDN 是否已關閉:
+
+```css
+asp-fallback-test-class="sr-only"
+asp-fallback-test-property="position"
+asp-fallback-test-value="absolute"
+```
+
+當然，這裡面是會有一些涉及計算哈希並將其與文件的完整性屬性哈希值進行比較。對於大多數應用程序，CDN失效的時候回退的都是到他們自己的服務器。通過將`asp-suppress-fallback-integrity`屬性設置為true，當然您也可以選擇關閉從本地服務器下載的文件完整性檢查。

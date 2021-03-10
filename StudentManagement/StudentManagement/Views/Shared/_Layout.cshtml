@@ -2,7 +2,27 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <link href="~/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <environment include="Development">
+            <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+        </environment>
+    @*<environment include="Development">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+                  integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        </environment>*@
+
+    @*如果應用程序環境是" Development "
+    ，則從我們的應用程序Web服務器加載非縮小的bootstrap的css文件(bootstrap.css)。如果應用程序環境不是" Development "
+    ，則從CDN加載縮小的bootstrap css文件(bootstrap.min.css)。*@
+    <environment exclude="Development">
+        <link rel="stylesheet"
+              integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+              crossorigin="anonymous"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/css/bootstrap.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position"
+              asp-fallback-test-value="absolute"
+              asp-suppress-fallback-integrity="true" />
+    </environment>
     <link href="~/css/site.css" rel="stylesheet" />
     <title>@ViewBag.Title</title>
 </head>
@@ -12,6 +32,7 @@
         @RenderBody()
     </div>
 
+    <script src="~/lib/jquery/jquery.js"></script>
     @if (IsSectionDefined("Scripts"))
     {
         @RenderSection("Scripts", required: false)
