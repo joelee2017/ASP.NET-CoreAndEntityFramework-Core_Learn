@@ -1372,3 +1372,6 @@ asp-fallback-test-value="absolute"
 ```
 
 當然，這裡面是會有一些涉及計算哈希並將其與文件的完整性屬性哈希值進行比較。對於大多數應用程序，CDN失效的時候回退的都是到他們自己的服務器。通過將`asp-suppress-fallback-integrity`屬性設置為true，當然您也可以選擇關閉從本地服務器下載的文件完整性檢查。
+
+------
+

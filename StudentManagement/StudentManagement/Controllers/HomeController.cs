@@ -128,6 +128,11 @@ namespace StudentManagement.Controllers
             //將ViewModel傳给View()方法
             return View(homeDetailsViewModel);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }
 

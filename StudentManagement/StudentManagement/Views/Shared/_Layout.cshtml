@@ -3,16 +3,13 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <environment include="Development">
-            <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
-        </environment>
-    @*<environment include="Development">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-                  integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-        </environment>*@
-
+        <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/twitter-bootstrap/js/bootstrap.js"></script>
+    </environment>
     @*如果應用程序環境是" Development "
-    ，則從我們的應用程序Web服務器加載非縮小的bootstrap的css文件(bootstrap.css)。如果應用程序環境不是" Development "
-    ，則從CDN加載縮小的bootstrap css文件(bootstrap.min.css)。*@
+        ，則從我們的應用程序Web服務器加載非縮小的bootstrap的css文件(bootstrap.css)。如果應用程序環境不是" Development "
+        ，則從CDN加載縮小的bootstrap css文件(bootstrap.min.css)。*@
     <environment exclude="Development">
         <link rel="stylesheet"
               integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
@@ -27,12 +24,31 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    <h5>這裡是_Layout</h5>
     <div class="container">
+        @*<h5>這裡是_Layout</h5>*@
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <a class="navbar-brand" asp-controller="home" asp-action="index">
+                <img src="~/images/banner.jpg" width="30" height="30" />
+            </a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="home" asp-action="index">列表</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="home" asp-action="create">創建</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         @RenderBody()
     </div>
-
-    <script src="~/lib/jquery/jquery.js"></script>
     @if (IsSectionDefined("Scripts"))
     {
         @RenderSection("Scripts", required: false)

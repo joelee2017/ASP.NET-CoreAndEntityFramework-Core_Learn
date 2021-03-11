@@ -11,9 +11,9 @@ namespace StudentManagement.Model
         {
             _studentList = new List<Student>()
             {
-            new Student() { Id = 1, Name = "張三", Major = "一年级", Email = "Tony-zhang@52abp.com" },
-            new Student() { Id = 2, Name = "李四", Major = "二年级", Email = "lisi@52abp.com" },
-            new Student() { Id = 3, Name = "王二麻子", Major = "二年级", Email = "wang@52abp.com" },
+            new Student() { Id = 1, Name = "張三", Major = MajorEnum.FirstGrade, Email = "Tony-zhang@52abp.com" },
+            new Student() { Id = 2, Name = "李四", Major = MajorEnum.SecondGrade, Email = "lisi@52abp.com" },
+            new Student() { Id = 3, Name = "王二麻子", Major = MajorEnum.GradeThree, Email = "wang@52abp.com" },
             };
         }
 
