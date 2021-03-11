@@ -6,5 +6,7 @@ namespace StudentManagement.Model
     {
         Student GetStudent(int id);
         IEnumerable<Student> GetAllStudents();
+
+        Student Add(Student student);
     }
 }

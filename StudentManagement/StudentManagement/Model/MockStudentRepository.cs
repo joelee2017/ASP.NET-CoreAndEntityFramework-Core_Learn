@@ -17,7 +17,6 @@ namespace StudentManagement.Model
             };
         }
 
-
         public Student GetStudent(int id)
         {
             // 返回學生名字
@@ -27,6 +26,13 @@ namespace StudentManagement.Model
         public IEnumerable<Student> GetAllStudents()
         {
             return _studentList;
+        }
+
+        public Student Add(Student student)
+        {
+            student.Id = _studentList.Max(s => s.Id) + 1;
+            _studentList.Add(student);
+            return student;
         }
     }
 }
