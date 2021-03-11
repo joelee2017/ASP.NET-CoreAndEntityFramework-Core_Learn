@@ -1463,3 +1463,34 @@ asp-fallback-test-value="absolute"
 
 ------
 
+##### AddSingleton vs AddScoped vs AddTransient 三者的差異性
+
+###### 註冊服務
+
+ASP.NET Core 提供 3 種方法來註冊服務到依賴注入容器中。而我們使用的方法決定了註冊服務的生命週期。
+
+- AddSingleton() : 顧名思義，AddSingleton()方法創建一個 Singleton 服務。首次請求時會創建 Singleton 服務。然後，所有後續的請求中都會使用相同的實例。因此，通常，每個應用程序只創建一次 Singleton 服務，並且在整個應用程序生命週期中使用該單個實例。
+
+- AddTransient() :此方法創建一個 Transient 服務。每次請求時，都會創建一個新的 Transient 服務實例。
+
+- AddScoped() - 此方法創建一個 Scoped 服務。在範圍內的每個請求中創建一個新的 Scoped 服務實例。例如，在 Web 應用程序中，它為每個 http 請求創建 1 個實例，但在同一 Web 請求中的其他服務在調用這個請求的時候，都會使用相同的實例。注意，它在一個客戶端請求中是相同的，但在多個客戶端請求中是不同的。
+
+
+在 ASP.NET Core 中，這些服務都是在Startup.cs文件的ConfigureServices()方法中註冊。
+
+###### Scoped(作用域)服務與 Transient(暫時性) 服務與 Singleton(單例)服務以下是 Scoped 服務和 Transient 服務之間的主要區別。
+
+使用作用域服務，我們在給定的 http 請求範圍內獲得相同的實例，但跨不同的 http 請求 獲得新實例.
+
+對於瞬時服務，每次請求實例時都會提供一個新實例，無論它是否在同一 http 的範圍內請求或跨越不同的 http 請求
+
+使用 Singleton 單例服務，只有一個實例。首次請求服務時，將創建一個實例，並且整個應用程序中的所有 http 請求都使用該實例。
+
+| 服務類型          | 同一譬Http請求的範圍內 | 橫跨多個不同Http請求 |
+| ----------------- | ---------------------- | -------------------- |
+| Scoped Service    | 同一個實體             | 新實體               |
+| Transient Service | 新實體                 | 新實體               |
+| Singleton Service | 同一個實體             | 同一個實體           |
+
+------
+
