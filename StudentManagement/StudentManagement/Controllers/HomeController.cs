@@ -54,7 +54,7 @@ namespace StudentManagement.Controllers
             id = id.Value > 3 ? 1 : id.Value;
             //實體化HomeDetailsViewModel並存儲Student詳细信息和PageTitle
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
-            {               
+            {
                 Student = _studentRepository.GetStudent(id ?? 1),
                 PageTitle = "Student Details"
             };
@@ -136,10 +136,15 @@ namespace StudentManagement.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult Create(Student student)
+        public IActionResult Create(Student student)
         {
-            Student newStudent = _studentRepository.Add(student);
-            return RedirectToAction("Details", new { id = newStudent.Id });
+            if (ModelState.IsValid)
+            {
+                Student newStudent = _studentRepository.Add(student);
+                return RedirectToAction("Details", new { id = newStudent.Id });
+            }
+
+            return View(student);
         }
     }
 }

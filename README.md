@@ -1393,3 +1393,73 @@ asp-fallback-test-value="absolute"
 
 ------
 
+##### 三十四、ASP.NET Core 中的模型驗證
+
+###### ModelState.IsValid 屬性驗證
+
+- 提交表單時，將執行以下`Create()`操作方法
+
+- 在創建學生表單視圖中表單模型是Student 類
+
+- 提交表單時，模型綁定將Post 請求的表單值映射到Student 類的相應屬性
+
+- 在**Name**屬性上添加了**Required**屬性，它會判斷Name中的值，如果該Name中的值為空，或者屬性不存在，則會驗證失敗
+
+- 使用`ModelState.IsValid`屬性會檢查驗證是否失敗或成功
+
+- 如果驗證失敗，我們返回相同的視圖，以便用戶可以提供所需的數據並重新提交表單。
+```csharp
+     [HttpPost]
+          public IActionResult Create(Student student)
+          {
+              if (ModelState.IsValid)
+              {
+  
+                  Student newStudent = _studentRepository.Add(student);
+       return RedirectToAction("Details", new { id = newStudent.Id });
+              }
+              return View();
+          }
+```
+
+###### 在視圖中顯示模型驗證錯誤
+
+要顯示驗證錯誤，請使用`asp-validation-for`和`asp-validation-summary`TagHelper。`asp-validation-for`TagHelper用於顯示模型類的單個屬性的驗證消息。`asp-validation-summary`TagHelper用於顯示驗證錯誤的摘要信息。
+
+要顯示與`Student`類的`Name`屬性關聯的驗證錯誤，請在`<span>`元素上使用`asp-validation-for`TagHelper。
+
+```html
+<div class="form-group row">
+  <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+  <div class="col-sm-10">
+    <input asp-for="Name" class="form-control" placeholder="请输入名字"/>
+    <span asp-validation-for="Name"></span>
+  </div>
+</div>
+```
+
+要顯示所有驗證錯誤的摘要，請在`<div>`元素上使用`asp-validation-summary`
+
+```html
+<div asp-validation-summary="All"></div>
+```
+
+###### ASP.NET Core 內置模型驗證屬性
+
+以下是ASP.NET Core 中內置的一些驗證屬性
+
+| 屬性              | 作用                                                    |
+| ----------------- | ------------------------------------------------------- |
+| Required          | 指定該字段是必填的的                                    |
+| Range             | 指定允許的最小值和最大值                                |
+| MinLength         | 使用MinLength 指定字符串的最小長度                      |
+| MaxLength         | 使用MinLength 指定字符串的最大長度                      |
+| Compare           | 比較模型的2 個屬性。例如，比較Email 和ConfirmEmail 屬性 |
+| RegularExpression | 正則表達式驗證提供的值是否與正則表達式指定的模式匹配    |
+
+###### 自定義模型驗證錯誤的顏色
+
+如果我們要更改視圖中模型驗證錯誤的文字的顏色，請在具有`asp-validation-for`和`asp-validation-summary`Taghelper的`<span>`>和`< div >`元素上使用**Bootstrap **中`text-danger`類
+
+------
+
