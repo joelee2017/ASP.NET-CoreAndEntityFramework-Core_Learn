@@ -1658,3 +1658,61 @@ public class AppDbContext : DbContext
 
 ------
 
+##### 三十七、在Entity Framework Core中使用SQLServer
+
+使用Entity Framework Core時，我們需要配置的重要事項之一就是配置我們計劃使用的數據庫提供程序。Entity Framework Core支持各種的數據庫，包括非關係數據庫。以下MSDN鏈接具有所有受支持的數據庫的列表。
+
+https://docs.microsoft.com/zh-cn/ef/core/providers/
+
+- 我們希望使用Entity Framework Core配置和使用Microsoft SQLServer。
+- 我們通常在Startup.cs文件的ConfigureServices（）方法中指定此配置。
+
+###### AddDbContext（）和AddDbContextPool（）方法之間的區別
+
+- 我們可以使用** AddDbContext（）**或**AddDbContextPool（）**方法向ASP.NET Core依賴注入容器中註冊我們的應用程序特定的DbContext類。
+- AddDbContext（）和AddDbContextPool（）方法的區別在於，AddDbContextPool（）方法提供了數據庫連接池（DbContextPool）。
+- 使用數據庫連接池，如果可用，則提供數據庫連接池中的實例，而不是創建新實例。
+- 數據庫連接池在概念上起作用ADO.NET中連接池的工作方式。
+- 從性能角度來看，AddDbContextPool（）方法結束AddDbContext（）方法。
+- 因此，如果您使用的是ASP.NET Core 2.0或更高版本，則推薦使用AddDbContextPool（）方法而不是AddDbContext（）方法。
+
+###### UseSqlServer（）擴展方法
+
+UseSqlServer（）擴展方法用於配置我們的應用程序特定的DbContext類，以使用Microsoft SQLServer作為數據庫。要連接到數據庫，我們需要將數據庫連接串聯作為參數，添加到UseSqlServer（）擴展方法中。
+
+##### ASP.NET Core中的數據庫連接字符串
+
+我們不需要在應用程序代碼中對連接串行進行硬編碼，或者將其存儲在`appsettings.json`配置文件中。
+
+```csharp
+{
+  "ConnectionStrings": {
+    "StudentDBConnection": "server=(localdb)\\MSSQLLocalDB;database=StudentDB;Trusted_Connection=true"
+  }
+}
+```
+
+在傳統的ASP.NET中，我們將應用程序配置存儲在XML格式的web.config文件中。在ASP.NET Core中，需要採用不同的配置源。這個配置源就是appsettings.json文件，它是JSON格式。
+
+而要從appsettings.json文件中重新連接字符串，我們使用`IConfiguration`服務中的`GetConnectionString()`方法。
+
+我們使用的SQLServer localdb與Visual Studio一起自動安裝。如果要使用完整的SQLServer而不是localdb，只需將appsettings.json配置文件中的連接更改為指向SQLServer實例即可。
+
+```json
+//訪问本地的DB
+"server=(localdb)\\MSSQLLocalDB;database=StudentDB;Trusted_Connection=true"
+
+//訪問完整的SQL連接字串
+"Server=localhost; Database=EmployeeDB; Trusted_Connection=True;"
+```
+
+數據庫連接字符串中的內容之間有什麼區別：
+
+- Trusted_Connection =真；
+- 集成安全性= SSPI；
+- 集成安全性= true;
+
+以上3個設置都代表一個相同的內容，使用集成Windows身份驗證連接到SQLServer而不是使用SQLServer身份驗證。
+
+------
+
