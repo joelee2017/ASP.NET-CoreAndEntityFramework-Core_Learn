@@ -1708,9 +1708,9 @@ UseSqlServer（）擴展方法用於配置我們的應用程序特定的DbContex
 
 數據庫連接字符串中的內容之間有什麼區別：
 
-- Trusted_Connection =真；
-- 集成安全性= SSPI；
-- 集成安全性= true;
+- Trusted_Connection=True;
+- Integrated Security=SSPI;
+- Integrated Security=true;
 
 以上3個設置都代表一個相同的內容，使用集成Windows身份驗證連接到SQLServer而不是使用SQLServer身份驗證。
 
