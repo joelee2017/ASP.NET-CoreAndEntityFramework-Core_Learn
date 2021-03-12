@@ -1574,7 +1574,7 @@ https://docs.microsoft.com/zh-cn/ef/core/providers/
 同樣的基礎設施層也會是一個類庫項目，通常不會引用**綜合功能包**。所以這意味著，沒有為數據訪問層項目安裝Entity Framework Core。
 
 | 表現層             | 多頁MVC、WebApi                                              |
-| :----------------- | :----------------------------------------------------------- |
+| :----------------- | ------------------------------------------------------------ |
 | 應用層             | 針對用戶場景、用例設計應用層服務，隔離底層細節               |
 | 領域層             | 專注於維護業務邏輯(編寫業務程式和處理流程時，盡量在純粹的內存環境中進行考量，更利於引入設計模式，不會被底層儲存細節打斷思路) |
 | 持久化層(基礎設施) | 負責數據查詢和持久化                                         |
@@ -1596,6 +1596,65 @@ https://docs.microsoft.com/zh-cn/ef/core/providers/
 - Microsoft.EntityFrameworkCore 包依賴於其他幾個包。
 
 當我們安裝`Microsoft.EntityFrameworkCore.SqlServer`包時，它還會自動安裝所有其他相關的`nuget`包。
+
+------
+
+##### 三十六、Entity Framework Core 中的DbContext
+
+Entity Framework Core 中的DbContext 類的重要性。
+
+它是EF Core 中非常重要的類之一，DbContext 的作用是在我們的應用程序代碼中用於與底層數據庫交互的類。正是這個類在管理數據庫連接，用於它查詢和保存數據庫中的數據。
+
+###### 在我們的應用程序中使用DbContext
+
+- 我們創建一個派生自DbContext 的類。
+- DbContext 類位於Microsoft.EntityFrameworkCore 命名空間中。
+
+```csharp
+  public class AppDbContext : DbContext
+  { }
+```
+
+###### Entity Framework Core 中的DbContextOptions
+
+- 為了使DbContext類能夠執行任何有用的工作，它需要一個**DbContextOptions**類的實例。
+- 下述**DbContextOptions**實例會承載應用中的配置信息，如**連接字符串，數據庫提供商**使用等
+- 要傳遞**DbContextOptions**實例，我們使用構造函數，如下例所示。
+- 我們要使用**DbContext**中的第二個重載方法，該重載方法是指定我們使用的配置信息。所以需要繼承**base**將配置信息傳遞進去。
+- 有關**DbContextOptions**類的更多信息，會在我們學習ASP.NET Core中的數據庫連接字符串時，進行學習.
+
+```csharp
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
+    {
+    }
+}
+```
+
+###### Entity Framework Core DbSet
+
+下面代碼中的DbContext類包括一個`DbSet <TEntity>`模型，而在裡面會包含一個實體屬性。
+
+- 在我們的應用程序中，我們只有一個實體類- Student。
+- 所以在我們的AppDbContext類中，只有一個`DbSet<Student>`屬性。
+- 我們將使用此DbSet 屬性Students 來查詢和保存Student 類的實例。
+- 針對`DbSet<TEntity>`的LINQ查詢將被轉換為針對底層數據庫的查詢。我們將在後面的章節中看到這一點。
+
+```csharp
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
+    {
+    }
+
+    public DbSet<Student> Students { get; set; }
+}
+```
+
+為了能夠連接到數據庫，我們需要數據庫連接字符串。在下一個視頻中，我們將討論在何處定義連接字符串並在Entity Framework Core 中使用它。
 
 ------
 
