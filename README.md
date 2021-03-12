@@ -1699,10 +1699,10 @@ UseSqlServer（）擴展方法用於配置我們的應用程序特定的DbContex
 我們使用的SQLServer localdb與Visual Studio一起自動安裝。如果要使用完整的SQLServer而不是localdb，只需將appsettings.json配置文件中的連接更改為指向SQLServer實例即可。
 
 ```json
-//訪问本地的DB
+//本地的DB
 "server=(localdb)\\MSSQLLocalDB;database=StudentDB;Trusted_Connection=true"
 
-//訪問完整的SQL連接字串
+//完整的SQL連接字串
 "Server=localhost; Database=EmployeeDB; Trusted_Connection=True;"
 ```
 
