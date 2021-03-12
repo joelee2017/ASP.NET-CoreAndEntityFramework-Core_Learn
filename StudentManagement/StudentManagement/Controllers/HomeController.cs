@@ -6,11 +6,6 @@ namespace StudentManagement.Controllers
 {
     public class HomeController : Controller
     {
-        //public JsonResult Index()
-        //{
-        //    return Json(new { id = 1, name = "pragim" });
-        //}
-
         private IStudentRepository _studentRepository;
 
         //使用建構式注入的方式注入IStudentRepository

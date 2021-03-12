@@ -1540,3 +1540,62 @@ https://docs.microsoft.com/zh-cn/ef/core/providers/
 
 ------
 
+##### 單層Web 應用和多層Web 應用的區別
+
+###### 單層Web 應用程序
+
+如果它是一個小項目，您可以在一個項目中擁有**界面層**，**業務邏輯層**和**數據訪問層**。因此，如果您使用ASP.NET Core 2.1或更高版本創建了一個Web應用程序項目，那麼在該Web應用程序項目中，您已經安裝了Entity Framework Core。
+
+這個包稱為**metapackage** ,目前還沒有標準的中文翻譯，我個人喜歡叫它**綜合功能包**。**綜合功能包**沒有自己的內容，但是有依賴項列表(其他包)。您可以在解決方案資源管理器中找到此**綜合功能包**。展開**綜合功能包**時，您可以找到所有依賴項。在依賴項中，您將找到已安裝的Entity Framework Core nuget軟件包。
+
+所以我想說的是，使用ASP.NET Core Version 2.1或更高版本創建的ASP.NET Core Web應用程序項目中已經安裝了Entity Framework Core ，它是作為**綜合功能包**的一部分。
+
+##### 多層Web 應用程序--三層架構
+
+在中小型應用程序中，我們通常至少有以下3層,屬於**多層SOA架構**中比較簡單的一種，很多人稱它為**三層架構**:
+
+- 界面層
+- 業務邏輯層
+- 數據訪問層
+
+這些層的實現都為單獨的項目。Entity Framework Core通常在數據訪問層項目中,因為它是必需的。數據訪問層項目是一個類庫項目，通常不會引用**綜合功能包**。所以這意味著，沒有為數據訪問層項目安裝Entity Framework Core。
+
+##### 多層Web 應用程序-- 領域驅動設計架構
+
+在大型應用程序中,有很多的架構體系，眾多開發極客們，也視圖找到一種銀彈，而目前我個人所推崇的設計思想是：**領域驅動設計**簡稱：DDD。而在這種思想下進行代碼庫分層可以降低代碼複雜性並提高代碼的可重用性。目前我著力於推廣的開發框架52ABP也是基於領域驅動設計思想而來。
+
+**領域驅動設計(DDD)中有四個基本層：**
+
+- 展現層(Presentation)：向用戶提供一個接口(UI)，使用應用層來和用戶(UI)進行交互。
+- 應用層(Application)：應用層是展現層和領域層能夠實現交互的中間者，協調業務對象去執行特定的應用任務。
+- 領域層(Domain)：包括業務對象和業務規則，這是應用程序的核心層。
+- 基礎設施層(Infrastructure)：提供通用技術來支持更高的層。例如基礎設施層的倉儲(Repository)可通過ORM 來實現數據庫交互，或者提供發送郵件的支持。
+
+同樣的基礎設施層也會是一個類庫項目，通常不會引用**綜合功能包**。所以這意味著，沒有為數據訪問層項目安裝Entity Framework Core。
+
+| 表現層             | 多頁MVC、WebApi                                              |
+| :----------------- | :----------------------------------------------------------- |
+| 應用層             | 針對用戶場景、用例設計應用層服務，隔離底層細節               |
+| 領域層             | 專注於維護業務邏輯(編寫業務程式和處理流程時，盡量在純粹的內存環境中進行考量，更利於引入設計模式，不會被底層儲存細節打斷思路) |
+| 持久化層(基礎設施) | 負責數據查詢和持久化                                         |
+
+###### 安裝Entity Framework Core
+
+要安裝Entity Framework Core 並能夠將SQLServer 用作應用程序的數據庫，需要安裝以下nuget 包。
+
+| NUGET 包                                 | 作用                                   |
+| ---------------------------------------- | -------------------------------------- |
+| Microsoft.EntityFrameworkCore.SqlServer  | 此nuget包包含SQLServer特定的功能       |
+| Microsoft.EntityFrameworkCore.Relational | 此nuget包包含所有關係數據庫通用的功能  |
+| Microsoft.EntityFrameworkCore            | 此nuget包包含通用實體frameowrk核心功能 |
+
+![Entity Framework Core .png](https://git.imweb.io/werltm/picturebed/raw/master/yoyomooc/aspnet/46-1.png)
+
+- Microsoft.EntityFrameworkCore.SqlServer 依賴於Microsoft.EntityFrameworkCore.Relational 包。
+- Microsoft.EntityFrameworkCore.Relational 包依賴於
+- Microsoft.EntityFrameworkCore 包依賴於其他幾個包。
+
+當我們安裝`Microsoft.EntityFrameworkCore.SqlServer`包時，它還會自動安裝所有其他相關的`nuget`包。
+
+------
+
