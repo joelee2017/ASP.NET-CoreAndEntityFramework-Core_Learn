@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace StudentManagement.Model
+namespace StudentManagementDataAccess.Models
 {
     public class Student
     {
-        [BindNever]
         public int Id { get; set; }
 
         [Display(Name = "姓名")]

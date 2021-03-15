@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using StudentManagement.Model;
 using StudentManagementDataAccess.Models;
+using StudentManagementDataAccess.Repository;
 
 namespace StudentManagement
 {
@@ -30,7 +30,8 @@ namespace StudentManagement
             services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(_configuration.GetConnectionString("StudentDBConnection")));
 
-            services.AddSingleton<IStudentRepository, MockStudentRepository>();
+           // services.AddSingleton<IStudentRepository, MockStudentRepository>();
+            services.AddScoped<IStudentRepository, SQLStudentRepository>();
 
             services.AddMvc().AddXmlSerializerFormatters();
         }

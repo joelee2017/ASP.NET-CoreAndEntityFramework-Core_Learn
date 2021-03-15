@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StudentManagement.Model
+namespace StudentManagementDataAccess.Models
 {
     public enum MajorEnum
     {

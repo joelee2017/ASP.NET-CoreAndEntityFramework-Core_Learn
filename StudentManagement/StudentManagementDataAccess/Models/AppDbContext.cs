@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StudentManagement.Model;
 
 namespace StudentManagementDataAccess.Models
 {

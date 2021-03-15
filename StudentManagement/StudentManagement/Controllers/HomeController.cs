@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Model.Mapper;
 using StudentManagement.Model;
 using StudentManagement.ViewModels;
+using StudentManagementDataAccess.Models;
+using StudentManagementDataAccess.Repository;
 
 namespace StudentManagement.Controllers
 {
@@ -50,7 +53,7 @@ namespace StudentManagement.Controllers
             //實體化HomeDetailsViewModel並存儲Student詳细信息和PageTitle
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
             {
-                Student = _studentRepository.GetStudent(id ?? 1),
+                Student = _studentRepository.GetStudent(id ?? 1).Map<Student, StudentViewModel>(),
                 PageTitle = "Student Details"
             };
 
@@ -61,7 +64,7 @@ namespace StudentManagement.Controllers
         // /home/DetailsObject
         public ObjectResult DetailsObject()
         {
-            Student model = _studentRepository.GetStudent(1);
+            StudentViewModel model = _studentRepository.GetStudent(1).Map<Student, StudentViewModel>();
             return new ObjectResult(model);
 
         }
@@ -69,7 +72,7 @@ namespace StudentManagement.Controllers
         // /home/DetailsView
         public ViewResult DetailsView()
         {
-            Student model = _studentRepository.GetStudent(1);
+            StudentViewModel model = _studentRepository.GetStudent(1).Map<Student, StudentViewModel>();
             // 相對路徑
             //  return View("../Test/MyViews/Details");
 
@@ -80,7 +83,7 @@ namespace StudentManagement.Controllers
         // /home/DetailsViewData
         public ViewResult DetailsViewData()
         {
-            Student model = _studentRepository.GetStudent(1);
+            StudentViewModel model = _studentRepository.GetStudent(1).Map<Student, StudentViewModel>();
             //使用ViewData將PageTitle和Student模型傳给View
             ViewData["PageTitle"] = "Student DetailsViewData";
             ViewData["Student"] = model;
@@ -91,7 +94,7 @@ namespace StudentManagement.Controllers
         // /home/DetailsViewBag
         public ViewResult DetailsViewBag()
         {
-            Student model = _studentRepository.GetStudent(1);
+            StudentViewModel model = _studentRepository.GetStudent(1).Map<Student, StudentViewModel>();
             //將PageTitle和Student模型對象存儲在ViewBag
             //我們正在使用動態屬性PageTitle和Student
             ViewBag.PageTitle = "Student DetailsViewBag";
@@ -103,7 +106,7 @@ namespace StudentManagement.Controllers
         // /home/DetailsModel
         public ViewResult DetailsModel()
         {
-            Student model = _studentRepository.GetStudent(1);
+            StudentViewModel model = _studentRepository.GetStudent(1).Map<Student, StudentViewModel>();
 
             ViewBag.PageTitle = "Student DetailsModel";
 
@@ -116,7 +119,7 @@ namespace StudentManagement.Controllers
             //實體化HomeDetailsViewModel并存儲Student詳细信息和PageTitle
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
             {
-                Student = _studentRepository.GetStudent(1),
+                Student = _studentRepository.GetStudent(1).Map<Student, StudentViewModel>(),
                 PageTitle = "Student DetailsViewModel"
             };
 
@@ -131,11 +134,11 @@ namespace StudentManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Student student)
+        public IActionResult Create(StudentViewModel student)
         {
             if (ModelState.IsValid)
             {
-                Student newStudent = _studentRepository.Add(student);
+                StudentViewModel newStudent = _studentRepository.Add(student.Map<StudentViewModel, Student>()).Map<Student, StudentViewModel>();
                 return RedirectToAction("Details", new { id = newStudent.Id });
             }
 
