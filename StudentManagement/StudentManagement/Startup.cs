@@ -30,8 +30,8 @@ namespace StudentManagement
             services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(_configuration.GetConnectionString("StudentDBConnection")));
 
-           // services.AddSingleton<IStudentRepository, MockStudentRepository>();
-            services.AddScoped<IStudentRepository, SQLStudentRepository>();
+            services.AddSingleton<IStudentRepository, MockStudentRepository>();
+          //  services.AddScoped<IStudentRepository, SQLStudentRepository>();
 
             services.AddMvc().AddXmlSerializerFormatters();
         }

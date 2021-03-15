@@ -1716,7 +1716,7 @@ UseSqlServer（）擴展方法用於配置我們的應用程序特定的DbContex
 
 ------
 
-##### 三十八、ASP.NET Core 中的倉儲模式
+##### 三十八、ASP.NET Core 中的**Repository**模式
 
 在這個章節中，我們將討論
 

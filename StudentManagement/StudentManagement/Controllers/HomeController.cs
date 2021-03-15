@@ -48,12 +48,17 @@ namespace StudentManagement.Controllers
 
         public ViewResult Details(int? id)
         {
-            id = id.Value < 1 ? 1 : id.Value;
-            id = id.Value > 3 ? 1 : id.Value;
+            var _student = _studentRepository.GetStudent(id.Value).Map<Student, StudentViewModel>();
+            if (_student == null)
+            {
+                Response.StatusCode = 404;
+                return View("StudentNotFound", id);
+            }
+
             //實體化HomeDetailsViewModel並存儲Student詳细信息和PageTitle
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
             {
-                Student = _studentRepository.GetStudent(id ?? 1).Map<Student, StudentViewModel>(),
+                Student = _student,
                 PageTitle = "Student Details"
             };
 
