@@ -1747,3 +1747,68 @@ UseSqlServer（）擴展方法用於配置我們的應用程序特定的DbContex
 
 ------
 
+##### 三十九、統一處理ASP.NET Core 中的404 錯誤異常信息
+
+處理不成功的http 狀態代碼組件的作用是處理ASP.NET Core 中的狀態代碼頁。
+
+- UseStatusCodePages 最不實用
+- UseStatusCodePagesWithRedirects
+- UseStatusCodePagesWithReExecute
+
+###### 404 錯誤的類型
+
+在ASP.NET Core 中，有兩種類型的404 錯誤可能發生:
+
+類型1：找不到指定ID 的資源信息。
+
+類型2：請求的URL 地址和路由不匹配。
+
+###### UseStatusCodePagesWithRedirects 中間件
+
+在生產應用程序中，我們希望攔截這些不成功的http狀態代碼並返回自定義錯誤視圖。為此，我們可以使用`UseStatusCodePagesWithRedirects`中間件或`UseStatusCodePagesWithReExecute`中間件。
+
+Startup 中的 Configure
+
+```csharp
+以下兩種都可
+app.UseStatusCodePagesWithRedirects("/Error/{0}");
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+```
+
+###### 添加ErrorController
+
+```csharp
+public class ErrorController : Controller
+{
+   //如果狀態代碼為404，則路徑將變為Error/404
+    [Route("Error/{statusCode}")]
+    public IActionResult HttpStatusCodeHandler(int statusCode)
+    {
+        switch (statusCode)
+        {
+            case 404:
+                ViewBag.ErrorMessage = "抱歉，你訪問的頁面不存在";
+                break;
+        }
+
+        return View("NotFound");
+    }
+}
+```
+
+###### 添加NotFound 視圖
+
+```razor
+@{
+    ViewBag.Title = "頁面不存在";
+}
+
+<h1>@ViewBag.ErrorMessage</h1>
+
+<a asp-action="index" asp-controller="home">
+    點擊此處返回首頁
+</a>
+```
+
+------
+

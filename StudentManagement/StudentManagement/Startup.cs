@@ -31,7 +31,7 @@ namespace StudentManagement
             options.UseSqlServer(_configuration.GetConnectionString("StudentDBConnection")));
 
             services.AddSingleton<IStudentRepository, MockStudentRepository>();
-          //  services.AddScoped<IStudentRepository, SQLStudentRepository>();
+            //  services.AddScoped<IStudentRepository, SQLStudentRepository>();
 
             services.AddMvc().AddXmlSerializerFormatters();
         }
@@ -48,6 +48,11 @@ namespace StudentManagement
                 //app.UseDeveloperExceptionPage(developerExceptionPageOptions);
                 app.UseDeveloperExceptionPage();
             }
+
+            // 自訂義錯誤重導頁
+            // app.UseStatusCodePagesWithRedirects("/Error/{0}");
+
+            // app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             //有點類似setting的感覺,在這個middleware會針對request的內容去做初始化
             app.UseRouting();
