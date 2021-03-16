@@ -4,6 +4,7 @@ using StudentManagement.Model;
 using StudentManagement.ViewModels;
 using StudentManagementDataAccess.Models;
 using StudentManagementDataAccess.Repository;
+using System;
 
 namespace StudentManagement.Controllers
 {
@@ -48,6 +49,7 @@ namespace StudentManagement.Controllers
 
         public ViewResult Details(int? id)
         {
+            throw new Exception("在Details中異常");
             var _student = _studentRepository.GetStudent(id.Value).Map<Student, StudentViewModel>();
             if (_student == null)
             {

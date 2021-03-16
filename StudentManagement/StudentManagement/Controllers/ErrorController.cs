@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace StudentManagement.Controllers
@@ -18,11 +19,26 @@ namespace StudentManagement.Controllers
                     ViewBag.ErrorMessage = "抱歉，你訪問的頁面不存在";
                     ViewBag.Path = statusCodeResult.OriginalPath;
                     ViewBag.QS = statusCodeResult.OriginalQueryString;
-                    ViewBag.PathBase = statusCodeResult.OriginalPathBase;
+                    //ViewBag.PathBase = statusCodeResult.OriginalPathBase;
                     break;
             }
 
             return View("NotFound");
+        }
+
+        [AllowAnonymous]
+        [Route("Error")]
+        public IActionResult Error()
+        {
+            //獲取異常細節
+            var exceptionHandlerPathFeature =
+                    HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+            ViewBag.ExceptionPath = exceptionHandlerPathFeature.Path;
+            ViewBag.ExceptionMessage = exceptionHandlerPathFeature.Error.Message;
+            ViewBag.StackTrace = exceptionHandlerPathFeature.Error.StackTrace;
+
+            return View("Error");
         }
     }
 }

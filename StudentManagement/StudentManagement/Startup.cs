@@ -48,11 +48,13 @@ namespace StudentManagement
                 //app.UseDeveloperExceptionPage(developerExceptionPageOptions);
                 app.UseDeveloperExceptionPage();
             }
-
-            // 自訂義錯誤重導頁
-            // app.UseStatusCodePagesWithRedirects("/Error/{0}");
-
-             app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            else
+            {
+                // 自訂義錯誤重導頁
+                app.UseExceptionHandler("/Error"); // 攔截異常
+                // app.UseStatusCodePagesWithRedirects("/Error/{0}");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}"); // 攔截404信息
+            }
 
             //有點類似setting的感覺,在這個middleware會針對request的內容去做初始化
             app.UseRouting();
