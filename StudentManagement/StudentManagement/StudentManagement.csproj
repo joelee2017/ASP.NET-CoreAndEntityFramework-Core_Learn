@@ -4,10 +4,10 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <!--進程內(InProcess)託管-->
-    <AspNetCoreHostingModel> InProcess </AspNetCoreHostingModel>
+    <!--<AspNetCoreHostingModel> InProcess </AspNetCoreHostingModel>-->
 
     <!--進程外(out-of-process)託管-->
-    <!--<AspNetCoreHostingModel> OutOfProcess </AspNetCoreHostingModel >-->
+    <AspNetCoreHostingModel> OutOfProcess </AspNetCoreHostingModel >
   </PropertyGroup>
 
   <ItemGroup>

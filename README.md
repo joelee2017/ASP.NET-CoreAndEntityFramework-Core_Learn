@@ -1948,3 +1948,78 @@ public class ErrorController : Controller
 
 ------
 
+##### 四十二、ASP.NET Core 中的日誌記錄
+
+###### ASP.NET Core 內置日誌記錄提供程序
+
+- Console
+- Debug
+- EventSource
+- EventLog
+- TraceSource
+- AzureAppServicesFile
+- AzureAppServicesBlob
+- ApplicationInsights
+
+###### ASP.NET Core 的第三方日誌記錄提供程序
+
+- NLog
+- Log4net
+- elmah
+- Serilog
+- Sentry
+- Gelf
+- JSNLog
+- KissLog.net
+- Loggr
+- Stackdriver
+
+###### ASP.NET Core 中默認的日誌記錄提供程序
+
+在 Program.cs 文件中的 Program 類中的 Main()方法是我們 ASP.NET Core 應程序的入口。這個方法調用 CreateDefaultBuilder()方法執行幾個任務：
+
+- 設置Web服務器
+- 從各種配置源加載主機和應用程序配置信息
+- 配置日誌記錄
+
+由於 ASP.NET Core 是開源的，我們可以在他們的官方 github 頁面上看到完整的源代碼。以下是 CreateDefaultBuilder()方法的源代碼：
+
+源代碼路徑地址：
+
+https://github.com/aspnet/AspNetCore/blob/v2.2.2/src/DefaultBuilder/src/WebHost.cs
+
+```csharp
+.ConfigureLogging((hostingContext, logging) =>
+{
+    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+    logging.AddConsole();
+    logging.AddDebug();
+    logging.AddEventSourceLogger();
+})
+```
+
+作為配置日誌記錄的一部分，CreateDefaultBuilder()方法默認添加以下 3 個日誌記錄提供程序。這就是我們運行 ASP.NET Core 項目時，我們可以在 Visual Studio 的控制台和調試窗口上都顯示了日誌信息。
+
+- Console
+- Debug
+- EventSource
+
+在應用程序配置文件 appsettings.json 中可以找到 CreateDefaultBuilder()方法對應的Logging節點 。
+
+以下是電腦上 appsettings.json 文件中的 Logging 部分。
+
+```json
+"Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  }
+```
+
+###### appsettings.json 文件
+
+LogLevel 用於控制記錄或顯示的日誌數據量。
+
+![image-20210316145120946](C:\Users\0900086664\AppData\Roaming\Typora\typora-user-images\image-20210316145120946.png)
+
+當然在實際開發中不建議您像這樣關閉，建議根據自己的需求，靈活調整。
