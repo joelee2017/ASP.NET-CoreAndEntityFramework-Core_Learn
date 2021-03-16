@@ -2023,3 +2023,92 @@ LogLevel 用於控制記錄或顯示的日誌數據量。
 ![image-20210316145120946](C:\Users\0900086664\AppData\Roaming\Typora\typora-user-images\image-20210316145120946.png)
 
 當然在實際開發中不建議您像這樣關閉，建議根據自己的需求，靈活調整。
+
+------
+
+##### 四十三、在 ASP.NET Core 中記錄異常信息
+
+ASP.NET Core 提供的 ILogger 接口記錄我們自己的消息(Info)，警告(Warnings)和異常(exceptions)信息。
+
+當用戶使用我們的應用程序時，如果有異常需要我們在某處記錄異常。然後，開發人員可以查看異常日誌，並在必要時提供修復。所以就需要記錄異常信息,以了解在使用應用程序時生產服務器上發生了什麼異常。
+
+public class ErrorController : Controller
+    {
+        private ILogger<ErrorController> logger;
+
+
+```c#
+    ///<summary>
+    ///注入ASP.NET  Core ILogger服務。
+    ///將控制器類型指定为泛型参數。
+    ///這有助于我们進行確定哪個類或控制器產生了異常，然后記錄它
+    ///</summary>
+    ///<param name="logger"></param>
+    public ErrorController(ILogger<ErrorController> logger)
+    {
+        this.logger = logger;
+    }
+
+    [AllowAnonymous]
+    [Route("Error")]
+    public IActionResult Error()
+    {
+        //獲取異常詳情信息
+        var exceptionHandlerPathFeature =
+                HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+        //LogError() 方法將異常記錄作為日誌中的錯誤類別記錄
+        logger.LogError($"路徑 {exceptionHandlerPathFeature.Path} " +
+            $"產生了一个錯誤{exceptionHandlerPathFeature.Error}");
+        return View("Error");
+    }
+
+    // 測試/market/food/3?name=apple
+    //如果狀態代碼為404，則路徑將變為Error/404
+    [Route("Error/{statusCode}")]
+    public IActionResult HttpStatusCodeHandler(int statusCode)
+    {
+
+        var statusCodeResult =
+            HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+        switch (statusCode)
+        {
+            case 404:
+                ViewBag.ErrorMessage = "抱歉，你訪問的頁面不存在";
+                //LogWarning() 方法將異常記錄作為日誌中的警告類別記錄
+                logger.LogWarning($"發生了一個404錯誤. 路徑 = " +
+            $"{statusCodeResult.OriginalPath} 以及查詢字符串 = " +
+            $"{statusCodeResult.OriginalQueryString}");
+                break;
+        }
+        return View("NotFound");
+    }
+}
+```
+###### 在 ASP.NET Core 中記錄異常信息
+
+兩個簡單的步驟來記錄我們自己定義的消息(Info)，警告(Warnings)和異常(exceptions)信息。
+
+在需要日誌記錄功能的地方注入 ILogger 實例
+
+可以指定 注入 ILogger 的類或控制器的類型作為 ILogger 泛型參數的參數。我們這樣做是因為,可以將類或控制器的完整名稱作為日誌類別包含在日誌輸出中。
+
+日誌類別用於對日誌消息進行分組。
+
+打開appsettings.json文件，在日誌級別下面添加以下代碼：
+
+```json
+ "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft": "Information"
+    }
+  },
+```
+
+當前的日誌中，顯示了Microsoft 級別的日誌信息，因為我們通過在appsettings.json文件中對日誌級別進行了配置，通過配置的"Microsoft": "Information"顯示了Microsoft的信息，我們也可以通過配置篩選過濾將"Microsoft": "Information"更改為"Microsoft": "Warning"。
+
+可以獲取到所有的完整錯誤日誌信息，從我們的ErrorController中，幫我們攔截到了具體到哪個類文件，以及哪行代碼出錯，以及報錯的信息。
+
+------
+
