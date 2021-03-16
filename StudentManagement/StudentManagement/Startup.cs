@@ -52,7 +52,7 @@ namespace StudentManagement
             // 自訂義錯誤重導頁
             // app.UseStatusCodePagesWithRedirects("/Error/{0}");
 
-            // app.UseStatusCodePagesWithReExecute("/Error/{0}");
+             app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             //有點類似setting的感覺,在這個middleware會針對request的內容去做初始化
             app.UseRouting();

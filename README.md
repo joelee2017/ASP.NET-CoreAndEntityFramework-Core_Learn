@@ -1812,3 +1812,139 @@ public class ErrorController : Controller
 
 ------
 
+##### 四十、UseStatusCodePagesWithRedirects 與UseStatusCodePagesWithReExecute 對比
+
+**UseStatusCodePagesWithRedirects** 中間件組件會攔截404 狀態代碼，顧名思義，它表示發出重定向到指定的錯誤路徑中(在我們的例子中路徑為"/Error/404")。
+
+###### 使用UseStatusCodePagesWithRedirects 請求處理
+
+如果使用UseStatusCodePagesWithRedirects，它向`http://localhost/market/food`發出請求時同樣會觸發404狀態代碼。
+
+- StatusCodePagesWithRedirects 中間件攔截此請求，並將其更改為302，將其指向錯誤路徑(/Error/404)
+- 302 狀態代碼表示所請求資源的URL 已被暫時更改，在我們的示例中，它更改為`/Error/404`
+- 因此，它會發出另一個GET 請求以滿足重定向的請求。
+- 由於發出了重定向，請注意地址欄中的URL也從`/market/food`更改為`/Error/404`
+- 請求流會經過http 管道並由MVC 中間件處理，最終返回狀態代碼為200 ,然後導航到NotFound 視圖中(這意味著請求已成功完成)
+- 對整個請求流程中的瀏覽器而言，沒有404 錯誤信息。
+- 如果您仔細觀察此請求和響應流，我們在實際發生錯誤時返回成功狀態代碼為200，這在語義上不正確的。
+
+###### 使用UseStatusCodePagesWithReExecute 請求處理
+
+如果應用程序使用UseStatusCodePagesWithReExecute("/Error/{0}")。它向`http://localhost/market/food`發出請求時同樣會觸發404狀態代碼。
+
+- UseStatusCodePagesWithReExecute 中間件攔截404 狀態代碼並重新執行將其指向URL 的管道即我們的(/Error/404)中。
+- 整個請求流經Http 管道並由MVC 中間件處理，該中間件返回NotFound 視圖HTML 的狀態代碼依然是200。
+- 當響應流出到客戶端時，它會通過UseStatusCodePagesWithReExecute 中間件，該中間件會使用HTML 響應，將200 狀態代碼替換為原始的404 狀態代碼。
+- 這是一個聰明的中間件。顧名思義，它重新執行管道應該正確的(404)狀態代碼。它只返回自定義視圖(NotFound)
+- 因為它只是重新執行管道而不發出重定向請求，所以我們還在地址欄中保留原始`http://localhost/market/food`。它不會從`/market/food`更改為`/Error/404`。
+
+```c#
+ var statusCodeResult =
+                HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+```
+
+- statusCodeResult.OriginalPath,可以獲取我們的URL 請求信息，
+- statusCodeResult.OriginalQueryString,會獲取我們的查詢字符串的搜索信息
+
+------
+
+##### 四十一、ASP.NET Core 中的全局異常處理
+
+###### ASP.NET Core 中的UseDeveloperExceptionPage 中間件
+
+開發環境中將DeveloperExceptionPage 中間件配置到HTTP 請求處理管道中，因此，如果我們在開發環境中運行應用程序，那麼如果存在未處理的異常，我們會看到以下開發人員異常頁面。
+
+![image-20210316113057392](C:\Users\0900086664\AppData\Roaming\Typora\typora-user-images\image-20210316113057392.png)
+
+DeveloperExceptionPage 中間件只能在開發環境中使用。例如，在像Production 這樣的非開發環境中使用此頁面存在安全風險，因為它包含可供攻擊者使用的詳細異常信息。而且此異常頁面對最終用戶也沒有任何意義。
+
+###### ASP.NET Core 中非開發環境異常信息
+
+本地開發機器上模擬在生產環境中運行應用程序將launchSettings.json 中的ASPNETCORE_ENVIRONMENT 變量設置為Production。
+
+```
+"ASPNETCORE_ENVIRONMENT": "Production"
+```
+
+默認情況下，如果在生產等非開發環境中存在未處理的異常，我們會看到以下默認頁面。
+
+![image-20210316113533367](C:\Users\0900086664\AppData\Roaming\Typora\typora-user-images\image-20210316113533367.png)
+
+
+
+請注意，上圖中除了顯示有個http 500 錯誤之外，我們沒有看到任何其他信息。錯誤500 表示服務器上出現錯誤，服務器不知道如何處理。
+
+此默認頁面對最終用戶不是很有用。我們希望處理異常並將用戶重定向到自定義錯誤視圖，這更有用且更有意義。
+
+###### ASP.NET Core 中的異常處理
+
+步驟1：對於非開發環境，使用UseExceptionHandler()方法將異常處理中間件添加到請求處理管道。我們需要打開Startup 類的Configure()方法。異常處理中間件會去ErrorController,請參考以下代碼：
+
+```c#
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseExceptionHandler("/Error");
+    }
+}
+```
+
+步驟2：修改ErrorController 代碼，它檢索異常詳細信息並返回自定義錯誤視圖。在生產應用程序中，我們不會在錯誤視圖上顯示異常詳細信息。我們可以將它們記錄到數據庫表，文件，事件查看器等，以便開發人員可以查看它們並在需要時提供代碼修復。
+
+```
+public class ErrorController : Controller
+{
+    [AllowAnonymous]
+    [Route("Error")]
+    public IActionResult Error()
+    {
+        //獲取異常細節
+        var exceptionHandlerPathFeature =
+                HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+        ViewBag.ExceptionPath = exceptionHandlerPathFeature.Path;
+        ViewBag.ExceptionMessage = exceptionHandlerPathFeature.Error.Message;
+        ViewBag.StackTrace = exceptionHandlerPathFeature.Error.StackTrace;
+
+        return View("Error");
+    }
+}
+```
+
+**請注意**：IExceptionHandlerPathFeature位於Microsoft.AspNetCore.Diagnostics命名空間中。
+
+步驟3：實現錯誤視圖
+
+```html
+<h3>
+  程式請求時發生了一個內部錯誤，我們會反饋給團隊，我們正在努力解決這個問題。
+</h3>
+<h5>請通過 ltm@ddxc.org 與我們取得聯繫</h5>
+<hr/>
+<h3>錯誤詳情:</h3>
+<div class="alert alert-danger">
+  <h5>異常路徑：</h5>
+  <hr/>
+  <p>@ViewBag.ExceptionPath</p>
+</div>
+
+<div class="alert alert-danger">
+  <h5>異常訊息：</h5>
+  <hr/>
+  <p>@ViewBag.ExceptionMessage</p>
+</div>
+
+<div class="alert alert-danger">
+  <h5>異常堆棧跟踪：</h5>
+  <hr/>
+  <p>@ViewBag.StackTrace</p>
+</div>
+```
+
+------
+
