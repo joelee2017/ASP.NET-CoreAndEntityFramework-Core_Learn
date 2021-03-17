@@ -2112,3 +2112,85 @@ public class ErrorController : Controller
 
 ------
 
+##### 四十四、ASP.NET Core 中使用Nlog 記錄信息到文件中
+
+ASP.NET Core 支持以下幾個第三方日誌記錄提供程序
+
+NLog Serilog elmah Sentry JSNLog
+
+###### 在ASP.NET Core 中使用NLog
+
+**步驟1**：安裝`NLog.Web.AspNetCore`nuget包
+
+安裝NLog 包後，您將看到.csproj 文件中的PackageReferenc 包含如下信息：
+
+```xml
+     <PackageReference Include="NLog.Web.AspNetCore" Version="4.11.0" />
+```
+
+**步驟2**：在項目的根目錄中創建nlog.config文件
+
+創建nlog.config 文件。以下是包含了記錄日誌信息的最低配置信息內容：
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!-- 要寫入的目標內容 -->
+  <targets>
+    <!-- 將日誌寫入文件的具體位置  -->
+    <target name="allfile" xsi:type="File"
+            fileName="d:\DemoLogs\nlog-all-${shortdate}.log"/>
+  </targets>
+
+  <!-- 將日誌程序名稱映射到目標的規則 -->
+  <rules>
+    <!--記錄所有日誌，包括Microsoft級别-->
+    <logger name="*" minlevel="Trace" writeTo="allfile"/>
+  </rules>
+</nlog>
+```
+
+要了解有關nlog.config 文件的更多信息，請參閱以下github wiki 頁面
+
+https://github.com/NLog/NLog/wiki/Configuration-file
+
+步驟3：啟用複製到文件夾
+
+右鍵單擊nlog.config 文件,在解決方案資源管理器中選擇屬性。在"屬性"窗口中設置:
+
+複製到輸出目錄=如果較新則復制
+
+步驟4： 啟用NLog 來記錄我們的日誌信息
+
+除了使用默認日誌記錄提供程序(即Console，Debug和EventSource)之外，我們還使用擴展方法AddNLog()添加了NLog。此方法位於`NLog.Extensions.Logging`命名空間中。
+
+```csharp
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+         Host.CreateDefaultBuilder(args)
+         .ConfigureWebHostDefaults(webBuilder =>
+         {
+             webBuilder.UseStartup<Startup>().UseNLog();
+         });
+    }
+```
+
+add Nlog.config，加上一些常用的設定
+
+- throwConfigExceptions - 設定有錯誤時會拋出exception
+- internalLogToConsole - 將Log輸出到Console視窗
+- archiveAboveSize - 單一檔案的大小限制，超過的拆分檔案
+- archiveNumbering - 拆分的檔名的規則
+- archiveFileName - 拆分的檔名
+- maxArchiveFiles - 拆分的檔案數量上限
+
+------
+
