@@ -2194,3 +2194,70 @@ add Nlog.config，加上一些常用的設定
 
 ------
 
+##### 四十五、ASP.NET Core 中LogLevel 配置及過濾日誌信息
+
+LogLevel 表示記錄消息的嚴重性。它可以是以下任何一種。它們在此處列出從最低到最高的嚴重程度。
+
+- Trace(跟踪) = 0
+- Debug(調試) = 1
+- 信息(Information)= 2
+- 警告(Warning)= 3
+- 錯誤(Error)= 4
+- 嚴重(Critical)= 5
+- 無(None)= 6
+
+###### LogLevel 列舉
+
+我們在HomeController構造方法中，輸入`LogLevel`，然後轉到定義後，可以看到LogLevel，它是通過枚舉定義的，它存在於`Microsoft.Extensions.Logging`命名空間中。
+
+```csharp
+namespace Microsoft.Extensions.Logging
+{
+    public enum LogLevel
+    {
+        Trace = 0,
+        Debug = 1,
+        Information = 2,
+        Warning = 3,
+        Error = 4,
+        Critical = 5,
+        None = 6
+    }
+}
+```
+
+## appsettings.json 中的LogLevel
+
+appsettings.json 文件中的LogLevel 設置用於控制記錄或顯示的日誌數據量。
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Trace",
+      "Microsoft": "Warning"
+    }
+  }
+}
+```
+
+###### ILogger 方法
+
+在ILogger 接口上，有提供日誌方法，包括方法名稱中的日誌級別。例如，要記錄TRACE 消息，我們使用LogTrace()方法。要記錄WARNING 消息，我們則使用LogWarning()方法。注意，除LogLevel = None 外，我們對每個日誌級別都有相應的方法。
+
+```c#
+  logger.LogTrace("Trace(跟踪) Log");
+  logger.LogDebug("Debug(偵錯) Log");
+  logger.LogInformation("信息(Information) Log");
+  logger.LogWarning("警告(Warning) Log");
+  logger.LogError("錯誤(Error) Log");
+  logger.LogCritical("嚴重(Critical) Log");
+```
+
+但是，如果您需要WARNING 及更高級別，則設置"Default"："Warning"
+
+如果您不想記錄任何內容，請將LogLevel 設置為None。LogLevel.None 的整數值為6，高於所有其他日誌級別。所以不會記錄。
+
+###### 特定環境變量中的appsettings.json 文件中的LogLevel 配置
+
+請記住特定環境的appsettings.json 文件(例如appsettings.development.json)中的配置會覆蓋appsettings.json 文件中的設置。所以請確保特定環境中的appsettings.json 文件中的日誌級別配置是您真正想要的配置信息，防止意外情況的出現。

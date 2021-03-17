@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Model.Mapper;
 using StudentManagement.Model;
 using StudentManagement.ViewModels;
@@ -11,11 +12,13 @@ namespace StudentManagement.Controllers
     public class HomeController : Controller
     {
         private IStudentRepository _studentRepository;
+        private ILogger<HomeController> logger;
 
         //使用建構式注入的方式注入IStudentRepository
-        public HomeController(IStudentRepository studentRepository)
+        public HomeController(IStudentRepository studentRepository,ILogger<HomeController> logger)
         {
             _studentRepository = studentRepository;
+            this.logger = logger;
         }
 
         public ViewResult IndexRoute()
@@ -49,7 +52,14 @@ namespace StudentManagement.Controllers
 
         public ViewResult Details(int? id)
         {
-            throw new Exception("在Details中異常");
+            //logger.LogTrace("Trace(跟踪) Log");
+            //logger.LogDebug("Debug(偵錯) Log");
+            //logger.LogInformation("信息(Information) Log");
+            //logger.LogWarning("警告(Warning) Log");
+            //logger.LogError("錯誤(Error) Log");
+            //logger.LogCritical("嚴重(Critical) Log");
+
+            //throw new Exception("在Details中異常");
             var _student = _studentRepository.GetStudent(id.Value).Map<Student, StudentViewModel>();
             if (_student == null)
             {
